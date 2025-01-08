@@ -1,131 +1,139 @@
 /* src/components/ScratchTicket/ScratchTicket.module.css */
 .ticket {
   width: 100%;
-  max-width: 300px;
-  margin: 0 auto 24px;
-  perspective: 1000px;
+  max-width: 320px;
+  margin: 0 auto 30px;
+  perspective: 2000px;
   position: relative;
 }
 
 .ticketInner {
   position: relative;
   transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 3px;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 4px;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.4) 0%,
-    rgba(255, 255, 255, 0.1) 100%
+    rgba(255, 107, 129, 0.5),
+    rgba(41, 128, 185, 0.5),
+    rgba(142, 68, 173, 0.5)
   );
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2), 0 5px 10px rgba(0, 0, 0, 0.1),
-    inset 0 0 1px rgba(255, 255, 255, 0.6);
-}
-
-.ticketInner::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.1) 45%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.1) 55%,
-    transparent 100%
-  );
-  border-radius: 20px;
-  animation: shimmer 2s infinite linear;
-  z-index: 1;
+  border-radius: 24px;
+  backdrop-filter: blur(15px);
+  animation: borderGlow 3s infinite linear;
 }
 
 .ticketContent {
   background: var(--tg-theme-secondary-bg-color);
-  border-radius: 18px;
-  padding: 16px;
+  border-radius: 20px;
+  padding: 20px;
   position: relative;
   z-index: 2;
   transform-style: preserve-3d;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1), 0 15px 35px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.ticketContent::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  animation: lightRotate 10s infinite linear;
+  pointer-events: none;
 }
 
 .ticketInfo {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  padding: 12px;
-  background: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.05),
-    rgba(0, 0, 0, 0.02)
-  );
-  border-radius: 12px;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-  transform: translateZ(20px);
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.1);
+  transform: translateZ(40px);
+  position: relative;
+  backdrop-filter: blur(10px);
 }
 
 .ticketNumber {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--tg-theme-button-color);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff6b81, #9b59b6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   display: flex;
   align-items: center;
   gap: 8px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
 }
 
-.ticketNumber::before {
-  content: "№";
-  font-size: 14px;
-  opacity: 0.7;
-  font-weight: 400;
+.ticketNumber::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff6b81, transparent);
+  animation: lineGlow 2s infinite;
 }
 
 .ticketPrice {
   font-weight: 800;
   color: #fff;
+  background: linear-gradient(135deg, #ff6b81, #9b59b6);
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 18px;
+  box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3), 0 2px 5px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.ticketPrice::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
   background: linear-gradient(
-    135deg,
-    var(--tg-theme-button-color),
-    rgba(52, 152, 219, 1)
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
   );
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  animation: shimmer 2s infinite;
 }
 
 .scratchArea {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 200px;
   background: linear-gradient(
     45deg,
-    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 107, 129, 0.1) 25%,
     transparent 25%,
     transparent 75%,
-    rgba(255, 255, 255, 0.1) 75%
+    rgba(155, 89, 182, 0.1) 75%
   );
-  background-size: 30px 30px;
-  border-radius: 15px;
+  background-size: 40px 40px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1);
-  transform: translateZ(30px);
-}
-
-.scratchCanvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  z-index: 2;
+  box-shadow: inset 0 2px 15px rgba(0, 0, 0, 0.1),
+    0 10px 20px rgba(0, 0, 0, 0.15);
+  transform: translateZ(50px);
 }
 
 .prizeArea {
@@ -141,94 +149,319 @@
   z-index: 1;
   background: radial-gradient(
     circle at center,
-    var(--tg-theme-bg-color) 0%,
-    rgba(52, 152, 219, 0.1) 100%
+    rgba(255, 107, 129, 0.1),
+    rgba(155, 89, 182, 0.1)
   );
+  backdrop-filter: blur(5px);
 }
 
 .revealed {
-  animation: revealPrize 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: revealPrizeNew 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .prizeAmount {
-  font-size: 38px;
-  font-weight: 800;
+  font-size: 42px;
+  font-weight: 900;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #ff6b81, #9b59b6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2), 0 0 10px rgba(255, 107, 129, 0.5);
+  transform: translateZ(60px);
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+}
+
+.prizeAmount.won {
   background: linear-gradient(135deg, #2ecc71, #27ae60);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  letter-spacing: 1px;
-  transform: translateZ(40px);
-  margin-bottom: 12px;
+  animation: pulseWin 2s infinite;
 }
 
-.prizeText {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--tg-theme-text-color);
-  background: rgba(255, 255, 255, 0.1);
-  padding: 8px 16px;
-  border-radius: 25px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1);
-  transform: translateZ(20px);
-  backdrop-filter: blur(5px);
-}
-
-.scratchText {
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--tg-theme-hint-color);
-  background: rgba(255, 255, 255, 0.1);
-  padding: 10px 20px;
-  border-radius: 25px;
-  transform: translateZ(20px);
-  animation: float 3s ease-in-out infinite;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
-}
-
-@keyframes revealPrize {
-  0% {
-    opacity: 0;
-    transform: perspective(1000px) rotateY(90deg) scale(0.8);
-  }
-  50% {
-    transform: perspective(1000px) rotateY(-20deg) scale(1.1);
-  }
-  100% {
-    opacity: 1;
-    transform: perspective(1000px) rotateY(0) scale(1);
-  }
-}
-
-@keyframes float {
-  0% {
-    transform: translateZ(20px) translateY(0);
-  }
-  50% {
-    transform: translateZ(20px) translateY(-10px);
-  }
-  100% {
-    transform: translateZ(20px) translateY(0);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-.ticket:hover .ticketInner {
-  transform: perspective(1000px) rotateX(5deg) rotateY(5deg);
-}
-
-/* Добавляем стили для неудачной попытки */
 .prizeAmount.lost {
   background: linear-gradient(135deg, #e74c3c, #c0392b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: shakeLoss 0.5s ease-in-out;
+}
+
+.prizeText {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--tg-theme-text-color);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px 20px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.1);
+  transform: translateZ(40px);
+  backdrop-filter: blur(5px);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.scratchText {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--tg-theme-hint-color);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 12px 24px;
+  border-radius: 30px;
+  transform: translateZ(40px);
+  animation: floatAdvanced 4s ease-in-out infinite;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), 0 8px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+@keyframes revealPrizeNew {
+  0% {
+    opacity: 0;
+    transform: perspective(1000px) rotateY(90deg) translateZ(100px);
+  }
+  50% {
+    transform: perspective(1000px) rotateY(-30deg) translateZ(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) rotateY(0) translateZ(0);
+  }
+}
+
+@keyframes floatAdvanced {
+  0% {
+    transform: translateZ(40px) translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateZ(40px) translateY(-15px) rotate(2deg);
+  }
+  75% {
+    transform: translateZ(40px) translateY(10px) rotate(-2deg);
+  }
+  100% {
+    transform: translateZ(40px) translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes borderGlow {
+  0%,
+  100% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  50% {
+    filter: hue-rotate(180deg) brightness(1.2);
+  }
+}
+
+@keyframes lightRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes lineGlow {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes pulseWin {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes shakeLoss {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
+}
+
+.ticket:hover .ticketInner {
+  transform: perspective(2000px) rotateX(10deg) rotateY(10deg) scale(1.05);
+}
+
+.ticketInner:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 15px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Анимация мерцания для цены */
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Анимация для выигрышной комбинации */
+@keyframes winningGlow {
+  0%,
+  100% {
+    filter: brightness(1) drop-shadow(0 0 10px rgba(46, 204, 113, 0.5));
+  }
+  50% {
+    filter: brightness(1.2) drop-shadow(0 0 20px rgba(46, 204, 113, 0.8));
+  }
+}
+
+/* Градиентная анимация для фона */
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Эффект стирания для canvas */
+.scratchCanvas {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="%23000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>')
+      16 16,
+    auto;
+  touch-action: none;
+}
+
+/* Дополнительные эффекты для призового значения */
+.prizeAmount.won {
+  animation: pulseWin 2s infinite, winningGlow 2s infinite;
+  text-shadow: 0 0 10px rgba(46, 204, 113, 0.5),
+    0 0 20px rgba(46, 204, 113, 0.3);
+}
+
+/* Улучшенный эффект для проигрыша */
+.prizeAmount.lost {
+  animation: shakeLoss 0.5s ease-in-out, fadeInOut 2s infinite;
+  opacity: 0.8;
+}
+
+/* Анимация затухания */
+@keyframes fadeInOut {
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Эффект нажатия на билет */
+.ticketInner:active {
+  transform: perspective(2000px) rotateX(5deg) rotateY(5deg) scale(0.98);
+  transition: all 0.1s ease;
+}
+
+/* Улучшенный эффект свечения для текста */
+.scratchText {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
+  background-size: 200% 100%;
+  animation: floatAdvanced 4s ease-in-out infinite,
+    gradientMove 3s linear infinite;
+}
+
+/* Эффект наведения для цены */
+.ticketPrice:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+/* 3D тень для карточки */
+.ticket::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 24px;
+}
+
+.ticket:hover::after {
+  opacity: 1;
+}
+
+/* Эффект свечения для выигрышного текста */
+.prizeText.win {
+  background: linear-gradient(
+    90deg,
+    rgba(46, 204, 113, 0.2),
+    rgba(46, 204, 113, 0.3),
+    rgba(46, 204, 113, 0.2)
+  );
+  background-size: 200% 100%;
+  animation: gradientMove 3s linear infinite;
+}
+
+/* Медиа-запрос для мобильных устройств */
+@media (max-width: 768px) {
+  .ticket {
+    max-width: 280px;
+  }
+
+  .scratchArea {
+    height: 180px;
+  }
+
+  .prizeAmount {
+    font-size: 36px;
+  }
+
+  .prizeText {
+    font-size: 16px;
+  }
+}
+
+/* Медиа-запрос для темной темы */
+@media (prefers-color-scheme: dark) {
+  .ticketContent {
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.2),
+      0 15px 35px rgba(0, 0, 0, 0.3);
+  }
+
+  .scratchText {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
 }

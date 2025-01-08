@@ -144,7 +144,9 @@ const ScratchTicket = ({ ticketId, price }) => {
               {isRevealed ? (
                 prize > 0 ? (
                   <>
-                    <span className={styles.prizeAmount}>+{prize} ₽</span>
+                    <span className={`${styles.prizeAmount} ${styles.won}`}>
+                      +{prize} ₽
+                    </span>
                     <span className={styles.prizeText}>Поздравляем!</span>
                   </>
                 ) : (
