@@ -1,0 +1,68 @@
+/* src/components/TicketSelection/TicketSelection.module.css */
+.container {
+  padding: 16px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-align: center;
+  color: var(--tg-theme-text-color);
+}
+
+.ticketList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ticketCard {
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  border-left: 4px solid var(--ticket-color);
+}
+
+.ticketCard:hover {
+  transform: translateY(-2px);
+}
+
+.ticketCard:active {
+  transform: translateY(0);
+}
+
+.ticketHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ticketName {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ticket-color);
+}
+
+.ticketPrice {
+  font-weight: 600;
+  color: var(--tg-theme-text-color);
+}
+
+.ticketInfo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.chanceLabel {
+  color: var(--tg-theme-hint-color);
+}
+
+.chanceValue {
+  font-weight: 500;
+  color: var(--tg-theme-text-color);
+}

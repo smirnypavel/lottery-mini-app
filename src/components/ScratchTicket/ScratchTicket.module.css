@@ -1,0 +1,100 @@
+/* src/components/ScratchTicket/ScratchTicket.module.css */
+.ticket {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 12px;
+  background-color: var(--tg-theme-secondary-bg-color);
+  padding: 12px;
+  margin: 0 auto 16px;
+}
+
+.ticketHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ticketId {
+  font-size: 14px;
+  color: var(--tg-theme-hint-color);
+}
+
+.price {
+  font-weight: 600;
+  color: var(--tg-theme-button-color);
+}
+
+.scratchArea {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.scratchOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #e0e0e0, #f5f5f5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px;
+  font-size: 14px;
+  color: var(--tg-theme-hint-color);
+}
+
+.scratched .scratchOverlay {
+  display: none;
+}
+
+.revealing {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--tg-theme-bg-color);
+  font-size: 16px;
+}
+
+.prizeArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  animation: revealPrize 0.5s ease-out;
+}
+
+.prizeAmount {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--tg-theme-button-color);
+  margin-bottom: 8px;
+}
+
+.prizeText {
+  font-size: 14px;
+  color: var(--tg-theme-text-color);
+}
+
+@keyframes revealPrize {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

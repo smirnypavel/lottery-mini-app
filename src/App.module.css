@@ -1,7 +1,7 @@
 .container {
   min-height: 100vh;
-  background-color: var(--tg-theme-bg-color, #fff);
-  color: var(--tg-theme-text-color, #000);
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
   padding: 16px;
 }
 
@@ -20,10 +20,7 @@
 }
 
 .userInfo {
-  background-color: var(
-    --tg-theme-secondary-bg-color,
-    rgba(255, 255, 255, 0.1)
-  );
+  background-color: var(--tg-theme-secondary-bg-color);
   padding: 16px;
   border-radius: 12px;
   text-align: center;
@@ -32,7 +29,7 @@
 }
 
 .userName {
-  color: var(--tg-theme-button-color, #2481cc);
+  color: var(--tg-theme-button-color);
   font-weight: 600;
 }
 
@@ -48,39 +45,26 @@
   padding: 16px;
 }
 
-.lotteryInfo {
-  margin-top: 24px;
+.ticketsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.subtitle {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-.card {
-  background-color: var(
-    --tg-theme-secondary-bg-color,
-    rgba(255, 255, 255, 0.1)
-  );
-  padding: 20px;
+.emptyState {
+  text-align: center;
+  padding: 32px 16px;
+  background-color: var(--tg-theme-secondary-bg-color);
   border-radius: 12px;
-  margin-bottom: 16px;
 }
 
-.prizeAmount {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: var(--tg-theme-button-color, #2481cc);
-}
-
-.timestamp {
-  font-size: 16px;
-  margin-bottom: 8px;
-}
-
-.participants {
+.hint {
+  margin-top: 8px;
   font-size: 14px;
-  color: var(--tg-theme-hint-color, #999);
+  color: var(--tg-theme-hint-color);
+}
+
+.price {
+  font-weight: 600;
+  color: var(--tg-theme-button-color);
 }
