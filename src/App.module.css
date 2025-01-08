@@ -1,0 +1,86 @@
+.container {
+  min-height: 100vh;
+  background-color: var(--tg-theme-bg-color, #fff);
+  color: var(--tg-theme-text-color, #000);
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.userInfo {
+  background-color: var(
+    --tg-theme-secondary-bg-color,
+    rgba(255, 255, 255, 0.1)
+  );
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  width: 100%;
+  max-width: 300px;
+}
+
+.userName {
+  color: var(--tg-theme-button-color, #2481cc);
+  font-weight: 600;
+}
+
+.userBalance {
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.lotteryInfo {
+  margin-top: 24px;
+}
+
+.subtitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.card {
+  background-color: var(
+    --tg-theme-secondary-bg-color,
+    rgba(255, 255, 255, 0.1)
+  );
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.prizeAmount {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--tg-theme-button-color, #2481cc);
+}
+
+.timestamp {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.participants {
+  font-size: 14px;
+  color: var(--tg-theme-hint-color, #999);
+}
