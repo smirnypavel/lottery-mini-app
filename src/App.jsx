@@ -18,12 +18,16 @@ function App() {
 
     // Настраиваем приложение
     tg.ready();
-    tg.expand();
+    tg.expand(); // Старый метод, разворачивает WebApp, но не на весь экран
+    tg.requestFullscreen(); // Новый метод для полноэкранного режима
 
     // Настраиваем главную кнопку
     tg.MainButton.setText("КУПИТЬ БИЛЕТ");
     tg.MainButton.show();
-    tg.MainButton.onClick(() => setIsSelecting(true));
+    tg.MainButton.onClick(() => {
+      setIsSelecting(true);
+      tg.requestFullscreen(); // Включение полноэкранного режима при нажатии на кнопку
+    });
   }, []);
 
   const handleSelectTicket = (selectedTicket) => {
