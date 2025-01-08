@@ -201,6 +201,7 @@
 }
 
 .scratchText {
+  position: absolute;
   font-size: 18px;
   font-weight: 600;
   color: var(--tg-theme-hint-color);
@@ -213,6 +214,8 @@
   backdrop-filter: blur(5px);
   text-transform: uppercase;
   letter-spacing: 1px;
+  z-index: 0; /* Уменьшаем z-index */
+  pointer-events: none; /* Отключаем события мыши */
 }
 
 @keyframes revealPrizeNew {
@@ -342,9 +345,13 @@
 
 /* Эффект стирания для canvas */
 .scratchCanvas {
-  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="%23000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>')
-      16 16,
-    auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 2;
   touch-action: none;
 }
 
