@@ -2,27 +2,84 @@
 .ticket {
   width: 100%;
   max-width: 300px;
-  background-color: var(--tg-theme-secondary-bg-color);
-  border-radius: 12px;
+  background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+  border-radius: 16px;
+  padding: 2px;
+  margin: 0 auto 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.ticket::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
+}
+
+.ticketInner {
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: 15px;
   padding: 16px;
-  margin: 0 auto 16px;
+  position: relative;
 }
 
 .ticketInfo {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 12px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.ticketNumber {
   font-size: 14px;
-  color: var(--tg-theme-hint-color);
+  font-weight: 600;
+  color: var(--tg-theme-button-color);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ticketNumber::before {
+  content: "№";
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.ticketPrice {
+  font-weight: 700;
+  color: var(--tg-theme-text-color);
+  background: var(--tg-theme-button-color);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
 .scratchArea {
   position: relative;
   width: 100%;
-  height: 150px;
-  background-color: var(--tg-theme-bg-color);
-  border-radius: 8px;
+  height: 160px;
+  background: linear-gradient(45deg, #f1f1f1 25%, transparent 25%),
+    linear-gradient(-45deg, #f1f1f1 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #f1f1f1 75%),
+    linear-gradient(-45deg, transparent 75%, #f1f1f1 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .scratchCanvas {
@@ -46,36 +103,66 @@
   align-items: center;
   justify-content: center;
   z-index: 1;
+  background: var(--tg-theme-bg-color);
 }
 
 .revealed {
-  animation: reveal 0.5s ease-out;
+  animation: reveal 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .prizeAmount {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 32px;
+  font-weight: 800;
   margin-bottom: 8px;
   color: var(--tg-theme-button-color);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: 1px;
 }
 
 .prizeText {
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 600;
   color: var(--tg-theme-text-color);
+  background: rgba(0, 0, 0, 0.05);
+  padding: 6px 12px;
+  border-radius: 20px;
 }
 
 .scratchText {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--tg-theme-hint-color);
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 8px 16px;
+  border-radius: 20px;
+  animation: pulse 2s infinite;
 }
 
 @keyframes reveal {
-  from {
+  0% {
     opacity: 0;
-    transform: scale(0.8);
+    transform: scale(0.8) rotate(-5deg);
   }
-  to {
+  50% {
+    transform: scale(1.1) rotate(3deg);
+  }
+  100% {
     opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
     transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }

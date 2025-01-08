@@ -116,46 +116,50 @@ const ScratchTicket = ({ ticketId, price }) => {
 
   return (
     <div className={styles.ticket}>
-      <div className={styles.ticketInfo}>
-        <span>Билет #{ticketId}</span>
-        <span>{price} ₽</span>
-      </div>
-      <div className={styles.scratchArea}>
-        {!isRevealed ? (
-          <canvas
-            ref={canvasRef}
-            className={styles.scratchCanvas}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          />
-        ) : null}
-        <div
-          className={`${styles.prizeArea} ${isRevealed ? styles.revealed : ""}`}
-        >
-          {isRevealed ? (
-            prize > 0 ? (
-              <>
-                <span className={styles.prizeAmount}>+{prize} ₽</span>
-                <span className={styles.prizeText}>Поздравляем!</span>
-              </>
+      <div className={styles.ticketInner}>
+        <div className={styles.ticketInfo}>
+          <span className={styles.ticketNumber}>{ticketId}</span>
+          <span className={styles.ticketPrice}>{price} ₽</span>
+        </div>
+        <div className={styles.scratchArea}>
+          {!isRevealed ? (
+            <canvas
+              ref={canvasRef}
+              className={styles.scratchCanvas}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            />
+          ) : null}
+          <div
+            className={`${styles.prizeArea} ${
+              isRevealed ? styles.revealed : ""
+            }`}
+          >
+            {isRevealed ? (
+              prize > 0 ? (
+                <>
+                  <span className={styles.prizeAmount}>+{prize} ₽</span>
+                  <span className={styles.prizeText}>Поздравляем!</span>
+                </>
+              ) : (
+                <>
+                  <span className={styles.prizeAmount}>0 ₽</span>
+                  <span className={styles.prizeText}>
+                    Повезет в следующий раз!
+                  </span>
+                </>
+              )
             ) : (
-              <>
-                <span className={styles.prizeAmount}>0 ₽</span>
-                <span className={styles.prizeText}>
-                  Повезет в следующий раз!
-                </span>
-              </>
-            )
-          ) : (
-            <span className={styles.scratchText}>
-              Потрите, чтобы узнать результат
-            </span>
-          )}
+              <span className={styles.scratchText}>
+                Потрите, чтобы узнать результат
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </div>
