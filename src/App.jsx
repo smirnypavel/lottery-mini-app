@@ -19,9 +19,7 @@ function App() {
     tg.ready();
     tg.requestFullscreen();
 
-    // Запретить свайп вниз через захват события касания
-    document.body.style.overscrollBehavior = "none";
-    document.body.style.touchAction = "none";
+    tg.disableVerticalSwipes();
 
     // Обновление кнопок управления Telegram
     tg.MainButton.setText("КУПИТЬ БИЛЕТ");
@@ -32,9 +30,7 @@ function App() {
     });
 
     return () => {
-      // Возврат стандартного поведения при размонтировании компонента
-      document.body.style.overscrollBehavior = "";
-      document.body.style.touchAction = "";
+      tg.enableVerticalSwipes();
     };
   }, []);
 
