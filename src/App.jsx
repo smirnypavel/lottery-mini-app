@@ -16,18 +16,26 @@ function App() {
       setUser(tg.initDataUnsafe.user);
     }
 
-    // Настраиваем приложение
     tg.ready();
-    tg.expand(); // Старый метод, разворачивает WebApp, но не на весь экран
-    tg.requestFullscreen(); // Новый метод для полноэкранного режима
+    tg.requestFullscreen();
 
-    // Настраиваем главную кнопку
+    // Запретить свайп вниз через захват события касания
+    document.body.style.overscrollBehavior = "none";
+    document.body.style.touchAction = "none";
+
+    // Обновление кнопок управления Telegram
     tg.MainButton.setText("КУПИТЬ БИЛЕТ");
     tg.MainButton.show();
     tg.MainButton.onClick(() => {
       setIsSelecting(true);
-      tg.requestFullscreen(); // Включение полноэкранного режима при нажатии на кнопку
+      tg.requestFullscreen();
     });
+
+    return () => {
+      // Возврат стандартного поведения при размонтировании компонента
+      document.body.style.overscrollBehavior = "";
+      document.body.style.touchAction = "";
+    };
   }, []);
 
   const handleSelectTicket = (selectedTicket) => {
