@@ -3,6 +3,7 @@ import styles from "./ScratchTicket.module.css";
 
 const ScratchTicket = ({ ticketId, price, poolSize }) => {
   const canvasRef = useRef(null);
+  const containerRef = useRef(null);
   const [isScratched, setIsScratched] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
   const [prize, setPrize] = useState(null);
@@ -10,151 +11,153 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
   const [blockHeight, setBlockHeight] = useState(156823);
   const [players, setPlayers] = useState(1234);
 
+  // Prevent scroll when scratching
   useEffect(() => {
-    // Имитация обновления высоты блока
-    const interval = setInterval(() => {
+    const preventScroll = (e) => {
+      if (isDragging) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener("touchmove", preventScroll, { passive: false });
+    return () => document.removeEventListener("touchmove", preventScroll);
+  }, [isDragging]);
+
+  useEffect(() => {
+    const blockInterval = setInterval(() => {
       setBlockHeight((prev) => prev + 1);
     }, 12000);
 
     const playersInterval = setInterval(() => {
-      setPlayers((prev) => prev + Math.floor(Math.random() * 3));
+      setPlayers((prev) => {
+        const increment = Math.floor(Math.random() * 3);
+        return prev + increment;
+      });
     }, 5000);
 
     return () => {
-      clearInterval(interval);
+      clearInterval(blockInterval);
       clearInterval(playersInterval);
     };
   }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
+    const containerWidth = canvas.offsetWidth;
+    const pixelRatio = window.devicePixelRatio || 1;
 
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    // Set canvas size with device pixel ratio
+    canvas.width = containerWidth * pixelRatio;
+    canvas.height = containerWidth * pixelRatio;
+    canvas.style.width = `${containerWidth}px`;
+    canvas.style.height = `${containerWidth}px`;
 
-    // Создаем футуристичный фон для области скретча
+    // Scale context for retina displays
+    ctx.scale(pixelRatio, pixelRatio);
+
+    // Create cyberpunk scratch layer
     const gradient = ctx.createRadialGradient(
-      canvas.width / 2,
-      canvas.height / 2,
+      containerWidth / 2,
+      containerWidth / 2,
       0,
-      canvas.width / 2,
-      canvas.height / 2,
-      canvas.width / 2
+      containerWidth / 2,
+      containerWidth / 2,
+      containerWidth / 2
     );
 
     gradient.addColorStop(0, "#0e1627");
     gradient.addColorStop(1, "#1a2538");
 
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, containerWidth, containerWidth);
 
-    // Добавляем декоративные элементы
-    for (let i = 0; i < 50; i++) {
-      const x = Math.random() * canvas.width;
-      const y = Math.random() * canvas.height;
-      const size = Math.random() * 3;
-
-      ctx.fillStyle = `rgba(32, 223, 255, ${Math.random() * 0.2})`;
-      ctx.fillRect(x, y, size, size);
+    // Add matrix-like effect
+    ctx.fillStyle = "rgba(32, 223, 255, 0.1)";
+    const gridSize = 20;
+    for (let x = 0; x < containerWidth; x += gridSize) {
+      for (let y = 0; y < containerWidth; y += gridSize) {
+        if (Math.random() > 0.5) {
+          ctx.fillText(String.fromCharCode(0x30a0 + Math.random() * 96), x, y);
+        }
+      }
     }
 
-    // Добавляем сетку
-    ctx.strokeStyle = "rgba(32, 223, 255, 0.1)";
-    ctx.lineWidth = 1;
-
-    for (let i = 0; i < canvas.width; i += 20) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, canvas.height);
-      ctx.stroke();
+    // Add noise effect
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      if (Math.random() < 0.05) {
+        data[i] = data[i + 1] = data[i + 2] = Math.random() * 255;
+        data[i + 3] = 25;
+      }
     }
-
-    for (let i = 0; i < canvas.height; i += 20) {
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(canvas.width, i);
-      ctx.stroke();
-    }
+    ctx.putImageData(imageData, 0, 0);
   }, []);
 
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    scratch(e);
-  };
+  const getScaledCoordinates = (e, canvas) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
 
-  const handleMouseMove = (e) => {
-    if (isDragging) {
-      scratch(e);
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    checkRevealThreshold();
-  };
-
-  const handleTouchStart = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-    scratchTouch(e);
-  };
-
-  const handleTouchMove = (e) => {
-    e.preventDefault();
-    if (isDragging) {
-      scratchTouch(e);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    setIsDragging(false);
-    checkRevealThreshold();
+    return {
+      x: ((e.clientX || e.touches[0].clientX) - rect.left) * scaleX,
+      y: ((e.clientY || e.touches[0].clientY) - rect.top) * scaleY,
+    };
   };
 
   const scratch = (e) => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const coords = getScaledCoordinates(e, canvas);
+    const pixelRatio = window.devicePixelRatio || 1;
+    const radius = 25 * pixelRatio;
 
     ctx.globalCompositeOperation = "destination-out";
+    const gradient = ctx.createRadialGradient(
+      coords.x,
+      coords.y,
+      0,
+      coords.x,
+      coords.y,
+      radius
+    );
 
-    const gradient = ctx.createRadialGradient(x, y, 0, x, y, 25);
     gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
     gradient.addColorStop(0.5, "rgba(255, 255, 255, 0.8)");
     gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
 
     ctx.fillStyle = gradient;
     ctx.beginPath();
-    ctx.arc(x, y, 25, 0, 2 * Math.PI);
+    ctx.arc(coords.x, coords.y, radius, 0, Math.PI * 2);
     ctx.fill();
   };
 
-  const scratchTouch = (e) => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    const rect = canvas.getBoundingClientRect();
-    const touch = e.touches[0];
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
+  const handleStart = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+    scratch(e.touches ? e.touches[0] : e);
+  };
 
-    ctx.globalCompositeOperation = "destination-out";
+  const handleMove = (e) => {
+    e.preventDefault();
+    if (!isDragging) return;
+    scratch(e.touches ? e.touches[0] : e);
+  };
 
-    const gradient = ctx.createRadialGradient(x, y, 0, x, y, 25);
-    gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
-    gradient.addColorStop(0.5, "rgba(255, 255, 255, 0.8)");
-    gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(x, y, 25, 0, 2 * Math.PI);
-    ctx.fill();
+  const handleEnd = () => {
+    setIsDragging(false);
+    checkRevealThreshold();
   };
 
   const checkRevealThreshold = () => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const pixels = imageData.data;
@@ -177,40 +180,55 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
   const revealPrize = () => {
     setIsRevealed(true);
     setIsScratched(true);
-    // Simulate random win with pool size consideration
+
     const winProbability = 1 / (poolSize || 1000);
     const isWinner = Math.random() < winProbability;
-    const amount = isWinner ? Math.floor(Math.random() * 50 + 1) : 0;
-    setPrize(amount);
+
+    let winAmount = 0;
+    if (isWinner) {
+      const prizes = [10000, 25000, 50000];
+      const weights = [0.7, 0.25, 0.05];
+      const random = Math.random();
+      let sum = 0;
+
+      for (let i = 0; i < weights.length; i++) {
+        sum += weights[i];
+        if (random <= sum) {
+          winAmount = prizes[i];
+          break;
+        }
+      }
+    }
+
+    setPrize(winAmount);
   };
 
-  // Создаем массив точек для кольца токенов
-  const tokenDots = Array.from({ length: 12 }, (_, i) => {
-    const angle = (i * 30 * Math.PI) / 180;
-    const x = 50 + 45 * Math.cos(angle);
-    const y = 50 + 45 * Math.sin(angle);
-    return { x, y };
-  });
+  const formatNumber = (num) => {
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1) + "K";
+    }
+    return num.toString();
+  };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} ref={containerRef}>
       <div className={styles.ticket}>
-        <div className={styles.hexagonBorder} />
+        <div className={styles.glassMorphism} />
         <div className={styles.ticketContent}>
           <div className={styles.networkStatus}>
             <div className={styles.statusDot} />
-            MAINNET CONNECTED
+            <span className={styles.statusText}>MAINNET CONNECTED</span>
           </div>
 
           <div className={styles.chainInfo}>
             <div className={styles.infoItem}>
               <div className={styles.infoLabel}>PLAYERS</div>
-              <div className={styles.infoValue}>{players.toLocaleString()}</div>
+              <div className={styles.infoValue}>{formatNumber(players)}</div>
             </div>
             <div className={styles.infoItem}>
               <div className={styles.infoLabel}>TON POOL</div>
               <div className={styles.infoValue}>
-                {(poolSize || 156.8).toFixed(1)}K
+                {formatNumber(poolSize || 156800)}
               </div>
             </div>
             <div className={styles.infoItem}>
@@ -219,32 +237,20 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
             </div>
           </div>
 
-          <div className={styles.scratchArea}>
-            <div className={styles.scratchCircle}>
-              <div className={styles.tokenRing}>
-                {tokenDots.map((pos, i) => (
-                  <div
-                    key={i}
-                    className={styles.tokenDot}
-                    style={{
-                      left: `${pos.x}%`,
-                      top: `${pos.y}%`,
-                      transform: "translate(-50%, -50%)",
-                    }}
-                  />
-                ))}
-              </div>
+          <div className={styles.scratchContainer}>
+            <div className={styles.scratchArea}>
+              <div className={styles.tokenRing} />
               {!isRevealed && (
                 <canvas
                   ref={canvasRef}
                   className={styles.scratchCanvas}
-                  onMouseDown={handleMouseDown}
-                  onMouseMove={handleMouseMove}
-                  onMouseUp={handleMouseUp}
-                  onMouseLeave={handleMouseUp}
-                  onTouchStart={handleTouchStart}
-                  onTouchMove={handleTouchMove}
-                  onTouchEnd={handleTouchEnd}
+                  onMouseDown={handleStart}
+                  onMouseMove={handleMove}
+                  onMouseUp={handleEnd}
+                  onMouseLeave={handleEnd}
+                  onTouchStart={handleStart}
+                  onTouchMove={handleMove}
+                  onTouchEnd={handleEnd}
                 />
               )}
               <div
@@ -256,18 +262,18 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
                   prize > 0 ? (
                     <>
                       <span className={`${styles.prizeAmount} ${styles.won}`}>
-                        +{prize} TON
+                        +{formatNumber(prize)} TON
                       </span>
-                      <span className={styles.prizeText}>VERIFIED WIN</span>
+                      <span className={styles.prizeText}>TX CONFIRMED</span>
                     </>
                   ) : (
                     <>
                       <span className={styles.prizeAmount}>0 TON</span>
-                      <span className={styles.prizeText}>NO MATCH</span>
+                      <span className={styles.prizeText}>TX FAILED</span>
                     </>
                   )
                 ) : (
-                  <span className={styles.prizeText}>SCRATCH HERE</span>
+                  <span className={styles.prizeText}>TAP TO VERIFY</span>
                 )}
               </div>
             </div>
@@ -275,15 +281,15 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
 
           <div className={styles.prizes}>
             <div className={styles.prizeOption}>
-              <div className={styles.prizeRank}>1ST PRIZE</div>
+              <div className={styles.prizeRank}>1ST</div>
               <div className={styles.prizeValue}>50K TON</div>
             </div>
             <div className={styles.prizeOption}>
-              <div className={styles.prizeRank}>2ND PRIZE</div>
+              <div className={styles.prizeRank}>2ND</div>
               <div className={styles.prizeValue}>25K TON</div>
             </div>
             <div className={styles.prizeOption}>
-              <div className={styles.prizeRank}>3RD PRIZE</div>
+              <div className={styles.prizeRank}>3RD</div>
               <div className={styles.prizeValue}>10K TON</div>
             </div>
           </div>
