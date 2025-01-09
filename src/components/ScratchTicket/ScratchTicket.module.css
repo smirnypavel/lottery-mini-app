@@ -1,119 +1,95 @@
 /* CyberScratchTicket.module.css */
-.container {
-  --neon-primary: rgb(32, 223, 255);
-  --neon-secondary: rgb(55, 250, 192);
-  --neon-accent: rgb(124, 178, 255);
-  --dark-bg: rgb(14, 22, 39);
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
 
+:root {
+  --card-height: 800px;
+  --primary: rgb(32, 223, 255);
+  --secondary: rgb(55, 250, 192);
+  --accent: rgb(124, 178, 255);
+  --dark: #0b0f17;
+}
+
+.container {
   width: 100%;
-  max-width: 340px;
+  max-width: 380px;
+  height: var(--card-height);
   margin: 0 auto;
   position: relative;
-  transform-style: preserve-3d;
-  perspective: 2000px;
+  perspective: 1000px;
+  background: var(--dark);
+  border-radius: 32px;
 }
 
-/* Футуристичная "голограмма" вокруг билета */
-.hologramFrame {
+/* Оболочка с размытым свечением */
+.glowWrapper {
   position: absolute;
-  inset: -20px;
-  border-radius: 30px;
-  background: linear-gradient(
-    120deg,
-    rgba(32, 223, 255, 0.1),
-    rgba(55, 250, 192, 0.1) 45%,
-    rgba(124, 178, 255, 0.1)
+  inset: 0;
+  border-radius: 32px;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--angle),
+    var(--primary),
+    var(--secondary),
+    var(--accent),
+    var(--primary)
   );
-  opacity: 0;
-  animation: hologramAppear 1s forwards;
+  animation: rotateConic 10s linear infinite;
+  opacity: 0.1;
+  filter: blur(15px);
 }
 
-.hologramFrame::before,
-.hologramFrame::after {
+/* Акцентная сетка */
+.accentGrid {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.05;
+}
+
+.accentGrid::before,
+.accentGrid::after {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: inherit;
-  animation: hologramScan 3s linear infinite;
-}
-
-.ticket {
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-/* 3D-эффект при наведении */
-.ticket:hover {
-  transform: translateY(-10px) rotateX(10deg);
-}
-
-.ticket:hover .hologramFrame {
-  opacity: 1;
-  transform: scale(1.05);
-}
-
-/* Стилизованная сетка на заднем плане */
-.gridOverlay {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(
-    circle at 50% 50%,
-    rgba(32, 223, 255, 0.1) 1px,
-    transparent 1px
-  );
+  inset: -50%;
+  background: linear-gradient(var(--primary) 0.5px, transparent 0.5px),
+    linear-gradient(90deg, var(--primary) 0.5px, transparent 0.5px);
   background-size: 20px 20px;
   animation: gridMove 20s linear infinite;
-  pointer-events: none;
+  transform: perspective(500px) rotateX(45deg);
 }
 
-/* Основной контент билета */
-.ticketContent {
-  background: var(--dark-bg);
-  border-radius: 24px;
-  padding: 20px;
+.accentGrid::after {
+  animation: gridMove 15s linear infinite reverse;
+  opacity: 0.5;
+}
+
+/* Основной контент */
+.content {
   position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+  height: 100%;
+  padding: 24px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-/* Динамический фон с частицами */
-.particleContainer {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.particle {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: var(--neon-primary);
-  border-radius: 50%;
-  animation: floatParticle 3s infinite;
-}
-
-/* Живой индикатор статуса сети */
-.networkStatus {
-  position: relative;
+/* Статус подключения */
+.status {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  padding: 8px 16px;
-  margin-bottom: 20px;
-  background: rgba(32, 223, 255, 0.05);
-  border-radius: 20px;
-  overflow: hidden;
+  opacity: 0.8;
 }
 
-/* Пульсирующий круг статуса */
 .statusDot {
-  width: 8px;
-  height: 8px;
-  background: var(--neon-secondary);
+  width: 6px;
+  height: 6px;
+  background: var(--primary);
   border-radius: 50%;
   position: relative;
 }
@@ -121,293 +97,254 @@
 .statusDot::before {
   content: "";
   position: absolute;
-  inset: -4px;
+  inset: -2px;
   border-radius: 50%;
-  border: 2px solid var(--neon-secondary);
-  animation: statusPulse 1.5s ease-out infinite;
+  background: var(--primary);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Информационные блоки */
-.chainInfo {
+.statusText {
+  font-size: 12px;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Информационная панель */
+.stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 16px;
+  margin-top: 8px;
 }
 
-.infoItem {
+.statItem {
   position: relative;
   padding: 12px;
   background: rgba(32, 223, 255, 0.03);
   border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.3s ease;
 }
 
-.infoItem:hover {
-  transform: scale(1.05);
-}
-
-/* Эффект блика на инфо-блоках */
-.infoItem::after {
+.statItem::before {
   content: "";
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
+  inset: 0;
   background: linear-gradient(
-    45deg,
+    90deg,
     transparent,
     rgba(32, 223, 255, 0.1),
     transparent
   );
-  transform: rotate(45deg);
-  animation: shimmerEffect 3s infinite;
+  transform: translateX(-100%);
+  animation: shine 3s infinite;
+  animation-delay: calc(var(--i) * 0.5s);
+}
+
+.statLabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 4px;
+}
+
+.statValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  text-shadow: 0 0 10px rgba(32, 223, 255, 0.5);
 }
 
 /* Область скретча */
 .scratchArea {
   position: relative;
-  width: 100%;
-  padding-bottom: 100%;
-  margin: 20px 0;
+  flex-grow: 1;
+  margin: 24px 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--dark);
 }
 
-/* Кольцо с токенами */
-.tokenRing {
+.hologramGrid {
   position: absolute;
-  inset: 5%;
-  border-radius: 50%;
+  inset: 0;
+  background: repeating-linear-gradient(
+      transparent 0px,
+      transparent 9px,
+      var(--primary) 10px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 9px,
+      var(--primary) 10px
+    );
+  background-size: 10px 10px;
+  opacity: 0.1;
+  filter: blur(0.5px);
 }
 
-/* Динамические точки на кольце */
-.tokenDot {
+.verifyText {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background: var(--neon-primary);
-  border-radius: 50%;
-  transform-origin: center;
-  animation: tokenPulse 2s infinite;
-}
-
-/* Призовая область */
-.prizeArea {
-  position: absolute;
-  inset: 5%;
+  inset: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: var(--dark-bg);
-}
-
-.prizeAmount {
-  font-size: 36px;
-  font-weight: 800;
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(32, 223, 255, 0.6);
+  letter-spacing: 2px;
   text-transform: uppercase;
-  animation: glitchText 3s infinite;
 }
 
-.prizeAmount.won {
-  color: var(--neon-secondary);
-  animation: winAnimation 2s infinite;
+.verifyText::before {
+  content: "";
+  position: absolute;
+  width: 150%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  animation: scanline 2s linear infinite;
 }
 
-/* Морфинг-анимация для призовых опций */
-.prizeOption {
-  position: relative;
-  padding: 12px;
+/* Призовые места */
+.prizes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prizeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px;
   background: rgba(32, 223, 255, 0.03);
+  border: 1px solid rgba(32, 223, 255, 0.1);
   border-radius: 12px;
-  overflow: hidden;
   transition: all 0.3s ease;
 }
 
-.prizeOption:hover {
-  transform: scale(1.05);
-  background: rgba(32, 223, 255, 0.08);
+.prizeRow:hover {
+  transform: translateX(4px);
+  border-color: rgba(32, 223, 255, 0.2);
+  background: rgba(32, 223, 255, 0.05);
 }
 
-/* Изменяющаяся рамка */
-.prizeOption::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  background: linear-gradient(
-      45deg,
-      var(--neon-primary),
-      var(--neon-secondary),
-      var(--neon-accent)
-    )
-    border-box;
-  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  animation: borderFlow 3s linear infinite;
+.prizeRank {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
 }
 
-@keyframes hologramAppear {
-  0% {
-    opacity: 0;
-    transform: scale(1.1);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+.prizeAmount {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  letter-spacing: 0.5px;
 }
 
-@keyframes hologramScan {
-  0% {
-    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+/* Анимации */
+@keyframes rotateConic {
+  from {
+    --angle: 0deg;
   }
-  50% {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  }
-  100% {
-    clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+  to {
+    --angle: 360deg;
   }
 }
 
 @keyframes gridMove {
   0% {
-    transform: translateY(0);
+    transform: perspective(500px) rotateX(45deg) translateY(0);
   }
   100% {
-    transform: translateY(-20px);
+    transform: perspective(500px) rotateX(45deg) translateY(20px);
   }
 }
 
-@keyframes floatParticle {
-  0%,
-  100% {
-    transform: translate(0, 0);
-    opacity: 0;
-  }
-  50% {
-    transform: translate(calc(random() * 100px), calc(random() * 100px));
-    opacity: 1;
-  }
-}
-
-@keyframes statusPulse {
+@keyframes pulse {
   0% {
     transform: scale(1);
     opacity: 0.8;
   }
   100% {
-    transform: scale(2);
+    transform: scale(3);
     opacity: 0;
   }
 }
 
-@keyframes shimmerEffect {
+@keyframes shine {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes scanline {
   0% {
-    transform: translateX(-200%) rotate(45deg);
-  }
-  100% {
-    transform: translateX(200%) rotate(45deg);
-  }
-}
-
-@keyframes tokenPulse {
-  0%,
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 10px var(--neon-primary);
+    transform: translateY(-100%) rotate(10deg);
+    opacity: 0;
   }
   50% {
-    transform: scale(1.3);
-    box-shadow: 0 0 20px var(--neon-primary);
+    opacity: 0.5;
   }
-}
-
-@keyframes glitchText {
-  0%,
   100% {
-    transform: translate(0);
-    text-shadow: none;
-  }
-  92% {
-    transform: translate(0);
-    text-shadow: none;
-  }
-  93% {
-    transform: translate(3px, -3px);
-    text-shadow: -3px 3px var(--neon-primary);
-  }
-  94% {
-    transform: translate(-3px, 3px);
-    text-shadow: 3px -3px var(--neon-secondary);
-  }
-  95% {
-    transform: translate(0);
-    text-shadow: none;
+    transform: translateY(100%) rotate(10deg);
+    opacity: 0;
   }
 }
 
-@keyframes winAnimation {
-  0%,
-  100% {
-    filter: hue-rotate(0deg) brightness(1);
-    transform: scale(1) rotate(0deg);
-  }
-  50% {
-    filter: hue-rotate(180deg) brightness(1.5);
-    transform: scale(1.1) rotate(-2deg);
-  }
+/* Состояния */
+.scratchCanvas {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  z-index: 2;
 }
 
-@keyframes borderFlow {
+.revealed .hologramGrid {
+  animation: glitch 0.3s ease;
+}
+
+@keyframes glitch {
   0% {
-    border-image-source: linear-gradient(
-      0deg,
-      var(--neon-primary),
-      var(--neon-secondary)
-    );
+    transform: translate(0);
   }
-  50% {
-    border-image-source: linear-gradient(
-      180deg,
-      var(--neon-secondary),
-      var(--neon-accent)
-    );
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(2px, -2px);
+  }
+  60% {
+    transform: translate(-2px, -2px);
+  }
+  80% {
+    transform: translate(2px, 2px);
   }
   100% {
-    border-image-source: linear-gradient(
-      360deg,
-      var(--neon-accent),
-      var(--neon-primary)
-    );
+    transform: translate(0);
   }
 }
 
-/* Медиа-запросы для адаптивности */
-@media (max-width: 768px) {
+/* Медиа запросы */
+@media (max-width: 480px) {
   .container {
-    max-width: 300px;
+    max-width: 100%;
+    height: 100vh;
+    border-radius: 0;
   }
 
-  .prizeAmount {
-    font-size: 28px;
+  .content {
+    padding: 16px;
   }
 
-  .infoItem {
-    padding: 8px;
+  .scratchArea {
+    margin: 16px 0;
   }
 }
 
-/* Поддержка редуцированной анимации */
-@media (prefers-reduced-motion: reduce) {
-  .hologramFrame,
-  .particle,
-  .statusDot::before,
-  .tokenDot,
-  .prizeAmount {
-    animation: none;
+/* Поддержка тёмной темы */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background: linear-gradient(to bottom, var(--dark), rgba(11, 15, 23, 0.95));
   }
 }
