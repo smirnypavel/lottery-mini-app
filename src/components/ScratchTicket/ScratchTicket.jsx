@@ -13,7 +13,22 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [blockHeight, setBlockHeight] = useState(156823);
   const [players, setPlayers] = useState(1234);
+  useEffect(() => {
+    const preventDefault = (e) => {
+      if (isDragging) {
+        e.preventDefault();
+      }
+    };
 
+    // Добавляем обработчики событий для предотвращения скролла
+    document.addEventListener("touchmove", preventDefault, { passive: false });
+    document.addEventListener("scroll", preventDefault, { passive: false });
+
+    return () => {
+      document.removeEventListener("touchmove", preventDefault);
+      document.removeEventListener("scroll", preventDefault);
+    };
+  }, [isDragging]);
   // Инициализация частиц
   useEffect(() => {
     const createParticles = () => {
@@ -28,7 +43,7 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
     };
 
     setParticles(createParticles());
-    
+
     const interval = setInterval(() => {
       setParticles(createParticles());
     }, 5000);
@@ -39,11 +54,11 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
   // Обновление блоков и игроков
   useEffect(() => {
     const blockInterval = setInterval(() => {
-      setBlockHeight(prev => prev + 1);
+      setBlockHeight((prev) => prev + 1);
     }, 12000);
 
     const playersInterval = setInterval(() => {
-      setPlayers(prev => {
+      setPlayers((prev) => {
         const increment = Math.floor(Math.random() * 3);
         return prev + increment;
       });
@@ -68,7 +83,7 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
     canvas.height = containerWidth * pixelRatio;
     canvas.style.width = `${containerWidth}px`;
     canvas.style.height = `${containerWidth}px`;
-    
+
     ctx.scale(pixelRatio, pixelRatio);
 
     // Создаем футуристичный фон для скретча
@@ -80,7 +95,7 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
       containerWidth / 2,
       containerWidth / 2
     );
-    
+
     gradient.addColorStop(0, "#0e1627");
     gradient.addColorStop(0.5, "#1a2538");
     gradient.addColorStop(1, "#0e1627");
@@ -91,11 +106,11 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
     // Добавляем матричные символы
     ctx.font = "12px monospace";
     ctx.fillStyle = "rgba(32, 223, 255, 0.2)";
-    
+
     for (let i = 0; i < containerWidth; i += 20) {
       for (let j = 0; j < containerWidth; j += 20) {
         if (Math.random() > 0.5) {
-          const char = String.fromCharCode(0x30A0 + Math.random() * 96);
+          const char = String.fromCharCode(0x30a0 + Math.random() * 96);
           ctx.fillText(char, i, j);
         }
       }
@@ -104,13 +119,13 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
     // Добавляем сетку
     ctx.strokeStyle = "rgba(32, 223, 255, 0.1)";
     ctx.lineWidth = 1;
-    
+
     for (let i = 0; i < containerWidth; i += 20) {
       ctx.beginPath();
       ctx.moveTo(i, 0);
       ctx.lineTo(i, containerWidth);
       ctx.stroke();
-      
+
       ctx.beginPath();
       ctx.moveTo(0, i);
       ctx.lineTo(containerWidth, i);
@@ -121,11 +136,11 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
   // Обработчики движения мыши для 3D-эффекта
   const handleMouseMove = (e) => {
     if (!containerRef.current) return;
-    
+
     const rect = containerRef.current.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
     const y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-    
+
     const ticket = containerRef.current.querySelector(`.${styles.ticket}`);
     if (ticket) {
       const rotateX = y * 10;
@@ -142,48 +157,57 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
   const handleMouseLeave = () => {
     const ticket = containerRef.current?.querySelector(`.${styles.ticket}`);
     if (ticket) {
-      ticket.style.transform = 'none';
+      ticket.style.transform = "none";
     }
   };
 
   // Обработчики скретча
   const handleStart = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
     scratch(e.touches ? e.touches[0] : e);
   };
 
   const handleMove = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!isDragging) return;
     scratch(e.touches ? e.touches[0] : e);
   };
 
-  const handleEnd = () => {
+  const handleEnd = (e) => {
+    e?.preventDefault();
+    e?.stopPropagation();
     setIsDragging(false);
     checkRevealThreshold();
   };
-
   const scratch = (e) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
     const rect = canvas.getBoundingClientRect();
-    const x = ((e.clientX || e.touches[0].clientX) - rect.left) * (canvas.width / rect.width);
-    const y = ((e.clientY || e.touches[0].clientY) - rect.top) * (canvas.height / rect.height);
+    const x =
+      ((e.clientX || e.touches[0].clientX) - rect.left) *
+      (canvas.width / rect.width);
+    const y =
+      ((e.clientY || e.touches[0].clientY) - rect.top) *
+      (canvas.height / rect.height);
 
     ctx.globalCompositeOperation = "destination-out";
-    
-    // Создаем эффект свечения при стирании
-    const gradient = ctx.createRadialGradient(x, y, 0, x, y, 40);
+
+    // Увеличиваем размер области стирания для лучшего опыта
+    const radius = 35;
+
+    const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
     gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
     gradient.addColorStop(0.5, "rgba(255, 255, 255, 0.8)");
     gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-    
+
     ctx.fillStyle = gradient;
     ctx.beginPath();
-    ctx.arc(x, y, 40, 0, Math.PI * 2);
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.fill();
   };
 
@@ -213,17 +237,17 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
   const revealPrize = () => {
     setIsRevealed(true);
     setIsScratched(true);
-    
+
     const winProbability = 1 / (poolSize || 1000);
     const isWinner = Math.random() < winProbability;
-    
+
     let winAmount = 0;
     if (isWinner) {
       const prizes = [10000, 25000, 50000];
       const weights = [0.7, 0.25, 0.05];
       const random = Math.random();
       let sum = 0;
-      
+
       for (let i = 0; i < weights.length; i++) {
         sum += weights[i];
         if (random <= sum) {
@@ -232,28 +256,28 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
         }
       }
     }
-    
+
     setPrize(winAmount);
   };
 
   const formatNumber = (num) => {
-    return new Intl.NumberFormat('en-US', {
-      notation: 'compact',
-      maximumFractionDigits: 1
+    return new Intl.NumberFormat("en-US", {
+      notation: "compact",
+      maximumFractionDigits: 1,
     }).format(num);
   };
 
   // Создаем токены на кольце
   const tokenDots = Array.from({ length: 12 }, (_, i) => {
-    const angle = (i * 30) * Math.PI / 180;
+    const angle = (i * 30 * Math.PI) / 180;
     const x = 50 + 45 * Math.cos(angle);
     const y = 50 + 45 * Math.sin(angle);
     return { x, y };
   });
 
   return (
-    <div 
-      className={styles.container} 
+    <div
+      className={styles.container}
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -289,7 +313,9 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
             </div>
             <div className={styles.infoItem}>
               <div className={styles.infoLabel}>TON POOL</div>
-              <div className={styles.infoValue}>{formatNumber(poolSize || 156800)}</div>
+              <div className={styles.infoValue}>
+                {formatNumber(poolSize || 156800)}
+              </div>
             </div>
             <div className={styles.infoItem}>
               <div className={styles.infoLabel}>BLOCK</div>
@@ -306,8 +332,8 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
                   style={{
                     left: `${pos.x}%`,
                     top: `${pos.y}%`,
-                    transform: 'translate(-50%, -50%)',
-                    animationDelay: `${i * 0.1}s`
+                    transform: "translate(-50%, -50%)",
+                    animationDelay: `${i * 0.1}s`,
                   }}
                 />
               ))}
@@ -325,7 +351,11 @@ const ScratchTicket = ({ ticketId, price, poolSize }) => {
                 onTouchEnd={handleEnd}
               />
             )}
-            <div className={`${styles.prizeArea} ${isRevealed ? styles.revealed : ""}`}>
+            <div
+              className={`${styles.prizeArea} ${
+                isRevealed ? styles.revealed : ""
+              }`}
+            >
               {isRevealed ? (
                 prize > 0 ? (
                   <>
