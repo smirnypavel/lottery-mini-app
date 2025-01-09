@@ -1,201 +1,204 @@
-.container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: radial-gradient(circle at center, #1a1f2f 0%, #0d1117 100%);
-  overflow: hidden;
-  touch-action: none;
-  padding: 20px;
+/* CyberScratchTicket.module.css */
+.ticket {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto 30px;
+  perspective: 2000px;
+  position: relative;
 }
 
-.card {
-  width: 100%;
-  max-width: 360px;
-  background: linear-gradient(
-    165deg,
-    rgba(30, 37, 56, 0.9) 0%,
-    rgba(22, 28, 46, 0.95) 100%
+.ticketInner {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 4px;
+  background: linear-gradient(135deg,
+    rgba(0, 255, 255, 0.2),
+    rgba(0, 200, 255, 0.2),
+    rgba(0, 150, 255, 0.2)
   );
   border-radius: 24px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 234, 255, 0.1);
-  overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
-    0 -15px 50px -12px rgba(0, 234, 255, 0.07);
+  backdrop-filter: blur(15px);
+  animation: borderGlow 3s infinite linear;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2),
+              inset 0 0 20px rgba(0, 255, 255, 0.1);
 }
 
-.content {
-  padding: 24px;
+.ticketContent {
+  background: rgba(13, 19, 28, 0.9);
+  border-radius: 20px;
+  padding: 20px;
+  position: relative;
+  z-index: 2;
+  transform-style: preserve-3d;
+  box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.1),
+              0 15px 35px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 255, 255, 0.1);
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 24px;
+.ticketInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(0, 255, 255, 0.05);
+  border-radius: 16px;
+  box-shadow: inset 0 0 15px rgba(0, 255, 255, 0.1);
+  transform: translateZ(40px);
+  border: 1px solid rgba(0, 255, 255, 0.1);
 }
 
-.title {
-  color: #00eaff;
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: 4px;
-  margin: 0 0 12px;
-  text-shadow: 0 0 10px rgba(0, 234, 255, 0.5), 0 0 20px rgba(0, 234, 255, 0.3);
-}
-
-.status {
+.ticketNumber {
+  font-size: 18px;
+  font-weight: 600;
+  color: #00ffff;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  color: rgba(0, 234, 255, 0.8);
-  font-size: 12px;
-  letter-spacing: 2px;
+  font-family: 'Courier New', monospace;
 }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  background: #00eaff;
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
-  animation: pulse 2s infinite;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.stat {
-  background: rgba(0, 234, 255, 0.05);
-  padding: 12px;
+.ticketPrice {
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 150, 255, 0.2));
+  padding: 8px 16px;
   border-radius: 12px;
-  border: 1px solid rgba(0, 234, 255, 0.1);
-  text-align: center;
-}
-
-.value {
-  color: #00eaff;
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 4px;
-  text-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
-}
-
-.label {
-  color: rgba(0, 234, 255, 0.6);
-  font-size: 11px;
-  letter-spacing: 1px;
+  font-size: 18px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
 .scratchArea {
   position: relative;
-  width: 240px;
-  height: 240px;
-  margin: 0 auto 24px;
-  border-radius: 20px;
+  width: 100%;
+  height: 200px;
+  background: rgba(0, 255, 255, 0.05);
+  border-radius: 50%;
   overflow: hidden;
-  background: rgba(0, 234, 255, 0.05);
-  border: 1px solid rgba(0, 234, 255, 0.1);
+  box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.1),
+              0 0 20px rgba(0, 255, 255, 0.2);
+  transform: translateZ(50px);
+  border: 1px solid rgba(0, 255, 255, 0.1);
 }
 
-.canvas {
+.scratchCanvas {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  touch-action: none;
   cursor: pointer;
+  z-index: 2;
+  border-radius: 50%;
+  background: radial-gradient(circle at center,
+    rgba(0, 255, 255, 0.1) 0%,
+    rgba(0, 150, 255, 0.05) 100%
+  );
 }
 
-.scratchText {
+.prizeArea {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #00eaff;
-  font-size: 24px;
-  font-weight: 700;
-  text-align: center;
-  letter-spacing: 2px;
-  text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
-  pointer-events: none;
-  animation: float 2s ease-in-out infinite;
-}
-
-.prizes {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.prize {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(0, 234, 255, 0.05);
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(0, 234, 255, 0.1);
+  justify-content: center;
+  background: radial-gradient(circle at center,
+    rgba(0, 255, 255, 0.1),
+    transparent
+  );
 }
 
-.amount {
-  color: #00eaff;
-  font-size: 18px;
+.prizeAmount {
+  font-size: 42px;
   font-weight: 700;
-  margin-bottom: 4px;
-  text-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+  color: #00ffff;
+  text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+  transform: translateZ(60px);
+  letter-spacing: 2px;
+  font-family: 'Courier New', monospace;
 }
 
-.prize .label {
-  font-size: 10px;
+.prizeAmount.won {
+  color: #00ff00;
+  text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+  animation: pulseWin 2s infinite;
 }
 
-@keyframes pulse {
-  0%,
-  100% {
+.prizeText {
+  font-size: 18px;
+  font-weight: 500;
+  color: #00ffff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  font-family: 'Courier New', monospace;
+}
+
+.scratchText {
+  color: #00ffff;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: pulseText 2s infinite;
+  font-family: 'Courier New', monospace;
+}
+
+@keyframes borderGlow {
+  0%, 100% {
+    filter: brightness(1) hue-rotate(0deg);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  }
+  50% {
+    filter: brightness(1.5) hue-rotate(180deg);
+    box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
+  }
+}
+
+@keyframes pulseWin {
+  0%, 100% {
     transform: scale(1);
+    text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+  }
+  50% {
+    transform: scale(1.1);
+    text-shadow: 0 0 40px rgba(0, 255, 0, 1);
+  }
+}
+
+@keyframes pulseText {
+  0%, 100% {
+    opacity: 0.8;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  }
+  50% {
     opacity: 1;
-  }
-  50% {
-    transform: scale(1.5);
-    opacity: 0.5;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
   }
 }
 
-@keyframes float {
-  0%,
-  100% {
-    transform: translate(-50%, -50%);
+@media (max-width: 768px) {
+  .ticket {
+    max-width: 280px;
   }
-  50% {
-    transform: translate(-50%, -60%);
-  }
-}
-
-@media (max-width: 380px) {
-  .content {
-    padding: 16px;
-  }
-
-  .title {
-    font-size: 24px;
-  }
-
+  
   .scratchArea {
-    width: 200px;
-    height: 200px;
+    height: 180px;
   }
-
-  .scratchText {
-    font-size: 20px;
+  
+  .prizeAmount {
+    font-size: 36px;
   }
-
-  .value {
-    font-size: 20px;
+  
+  .prizeText {
+    font-size: 16px;
   }
 }

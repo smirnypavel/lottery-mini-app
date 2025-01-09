@@ -1,161 +1,189 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import styles from "./ScratchTicket.module.css";
 
-const ScratchTicket = () => {
+const ScratchTicket = ({ ticketId, price, poolSize }) => {
   const canvasRef = useRef(null);
-  const [isScratching, setIsScratching] = useState(false);
-  const [revealProgress, setRevealProgress] = useState(0);
-  const lastMousePosRef = useRef(null);
+  const [isScratched, setIsScratched] = useState(false);
+  const [isRevealed, setIsRevealed] = useState(false);
+  const [prize, setPrize] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-
     const ctx = canvas.getContext("2d");
-    canvas.width = 240;
-    canvas.height = 240;
 
-    // Create gradient background
-    const gradient = ctx.createLinearGradient(
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    // Create cyber-themed scratch overlay
+    const gradient = ctx.createRadialGradient(
+      canvas.width / 2,
+      canvas.height / 2,
       0,
-      0,
-      canvas.width,
-      canvas.height
+      canvas.width / 2,
+      canvas.height / 2,
+      canvas.width / 2
     );
-    gradient.addColorStop(0, "#0D1117");
-    gradient.addColorStop(1, "#1A1F2F");
+
+    gradient.addColorStop(0, "#1a2a3a");
+    gradient.addColorStop(1, "#0d151c");
 
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Add grid pattern
-    ctx.strokeStyle = "rgba(0, 234, 255, 0.1)";
-    ctx.lineWidth = 1;
-    const gridSize = 20;
-
-    for (let i = 0; i < canvas.width; i += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, canvas.height);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(canvas.width, i);
-      ctx.stroke();
+    // Add some "digital noise" effect
+    for (let i = 0; i < 1000; i++) {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      const size = Math.random() * 2;
+      ctx.fillStyle = `rgba(0, 255, 255, ${Math.random() * 0.1})`;
+      ctx.fillRect(x, y, size, size);
     }
   }, []);
 
-  const handlePointerDown = (e) => {
-    e.preventDefault();
-    setIsScratching(true);
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX ?? e.touches[0].clientX;
-    const y = e.clientY ?? e.touches[0].clientY;
-
-    lastMousePosRef.current = {
-      x: x - rect.left,
-      y: y - rect.top,
-    };
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    scratch(e);
   };
 
-  const handlePointerMove = (e) => {
+  const handleMouseMove = (e) => {
+    if (isDragging) {
+      scratch(e);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    checkRevealThreshold();
+  };
+
+  const handleTouchStart = (e) => {
     e.preventDefault();
-    if (!isScratching || !lastMousePosRef.current) return;
+    setIsDragging(true);
+    scratchTouch(e);
+  };
 
+  const handleTouchMove = (e) => {
+    e.preventDefault();
+    if (isDragging) {
+      scratchTouch(e);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    checkRevealThreshold();
+  };
+
+  const scratch = (e) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX ?? e.touches[0].clientX;
-    const y = e.clientY ?? e.touches[0].clientY;
-
-    const currentPos = {
-      x: x - rect.left,
-      y: y - rect.top,
-    };
-
     const ctx = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
     ctx.globalCompositeOperation = "destination-out";
-    ctx.lineWidth = 40;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
 
+    // Create a glowing scratch effect
+    const gradient = ctx.createRadialGradient(x, y, 0, x, y, 20);
+    gradient.addColorStop(0, "rgba(0, 255, 255, 1)");
+    gradient.addColorStop(1, "rgba(0, 255, 255, 0)");
+
+    ctx.fillStyle = gradient;
     ctx.beginPath();
-    ctx.moveTo(lastMousePosRef.current.x, lastMousePosRef.current.y);
-    ctx.lineTo(currentPos.x, currentPos.y);
-    ctx.stroke();
+    ctx.arc(x, y, 20, 0, 2 * Math.PI);
+    ctx.fill();
+  };
 
-    lastMousePosRef.current = currentPos;
+  const scratchTouch = (e) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
 
-    // Calculate reveal progress
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.beginPath();
+    ctx.arc(x, y, 20, 0, 2 * Math.PI);
+    ctx.fill();
+  };
+
+  const checkRevealThreshold = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const pixels = imageData.data;
     let transparentPixels = 0;
 
     for (let i = 0; i < pixels.length; i += 4) {
-      if (pixels[i + 3] < 128) transparentPixels++;
+      if (pixels[i + 3] < 128) {
+        transparentPixels++;
+      }
     }
 
-    setRevealProgress((transparentPixels / (pixels.length / 4)) * 100);
+    const totalPixels = pixels.length / 4;
+    const scratchedPercentage = (transparentPixels / totalPixels) * 100;
+
+    if (scratchedPercentage > 50 && !isRevealed) {
+      revealPrize();
+    }
   };
 
-  const handlePointerUp = () => {
-    setIsScratching(false);
+  const revealPrize = () => {
+    setIsRevealed(true);
+    setIsScratched(true);
+    // Simulate random win with pool size consideration
+    const winProbability = 1 / (poolSize || 1000); // Default 0.1% chance
+    const isWinner = Math.random() < winProbability;
+    const amount = isWinner ? Math.floor(Math.random() * 50 + 1) : 0;
+    setPrize(amount);
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <div className={styles.content}>
-          <div className={styles.header}>
-            <h1 className={styles.title}>TON LOTTERY</h1>
-            <div className={styles.status}>
-              <span className={styles.dot}></span>
-              MAINNET CONNECTED
-            </div>
+    <div className={styles.ticket}>
+      <div className={styles.ticketInner}>
+        <div className={styles.ticketContent}>
+          <div className={styles.ticketInfo}>
+            <span className={styles.ticketNumber}>#{ticketId}</span>
+            <span className={styles.ticketPrice}>{price} TON</span>
           </div>
-
-          <div className={styles.stats}>
-            <div className={styles.stat}>
-              <div className={styles.value}>156.8K</div>
-              <div className={styles.label}>TON POOL</div>
-            </div>
-            <div className={styles.stat}>
-              <div className={styles.value}>24H</div>
-              <div className={styles.label}>UNTIL DRAW</div>
-            </div>
-          </div>
-
           <div className={styles.scratchArea}>
-            <canvas
-              ref={canvasRef}
-              onMouseDown={handlePointerDown}
-              onMouseMove={handlePointerMove}
-              onMouseUp={handlePointerUp}
-              onMouseLeave={handlePointerUp}
-              onTouchStart={handlePointerDown}
-              onTouchMove={handlePointerMove}
-              onTouchEnd={handlePointerUp}
-              className={styles.canvas}
-            />
-            {revealProgress < 30 && (
-              <div className={styles.scratchText}>SCRATCH HERE</div>
+            {!isRevealed && (
+              <canvas
+                ref={canvasRef}
+                className={styles.scratchCanvas}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              />
             )}
-          </div>
-
-          <div className={styles.prizes}>
-            <div className={styles.prize}>
-              <span className={styles.amount}>50K TON</span>
-              <span className={styles.label}>1ST PRIZE</span>
-            </div>
-            <div className={styles.prize}>
-              <span className={styles.amount}>25K TON</span>
-              <span className={styles.label}>2ND PRIZE</span>
+            <div
+              className={`${styles.prizeArea} ${
+                isRevealed ? styles.revealed : ""
+              }`}
+            >
+              {isRevealed ? (
+                prize > 0 ? (
+                  <>
+                    <span className={`${styles.prizeAmount} ${styles.won}`}>
+                      +{prize} TON
+                    </span>
+                    <span className={styles.prizeText}>WINNER!</span>
+                  </>
+                ) : (
+                  <>
+                    <span className={styles.prizeAmount}>0 TON</span>
+                    <span className={styles.prizeText}>TRY AGAIN</span>
+                  </>
+                )
+              ) : (
+                <span className={styles.scratchText}>SCRATCH HERE</span>
+              )}
             </div>
           </div>
         </div>
