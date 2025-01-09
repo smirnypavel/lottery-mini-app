@@ -1,226 +1,361 @@
-.container {
+.ticket {
   width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  background: linear-gradient(
-    180deg,
-    rgba(13, 25, 34, 0.9) 0%,
-    rgba(14, 29, 40, 0.95) 100%
-  );
-  border-radius: 24px;
-  border: 1px solid rgba(0, 231, 255, 0.1);
-  box-shadow: 0 0 20px rgba(0, 231, 255, 0.1);
+  max-width: 320px;
+  margin: 0 auto 30px;
+  perspective: 2000px;
   position: relative;
+}
+
+.ticketInner {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 2px;
+  background: linear-gradient(
+      217deg,
+      rgba(0, 255, 240, 0.8),
+      rgba(0, 255, 240, 0) 70%
+    ),
+    linear-gradient(127deg, rgba(0, 183, 255, 0.8), rgba(0, 183, 255, 0) 70%),
+    linear-gradient(336deg, rgba(128, 0, 255, 0.8), rgba(128, 0, 255, 0) 70%);
+  border-radius: 24px;
+  backdrop-filter: blur(20px);
+  animation: cosmicGlow 4s infinite linear;
+  box-shadow: 0 0 30px rgba(0, 255, 240, 0.3),
+    inset 0 0 20px rgba(0, 255, 240, 0.2);
+}
+
+.ticketContent {
+  background: rgba(13, 16, 33, 0.95);
+  border-radius: 22px;
+  padding: 20px;
+  position: relative;
+  z-index: 2;
+  transform-style: preserve-3d;
+  box-shadow: inset 0 0 50px rgba(0, 255, 240, 0.1);
   overflow: hidden;
+  border: 1px solid rgba(0, 255, 240, 0.1);
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 30px;
+.ticketContent::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+      2px 2px at 20px 30px,
+      rgba(0, 255, 240, 0.8) 50%,
+      rgba(0, 0, 0, 0)
+    ),
+    radial-gradient(
+      2px 2px at 40px 70px,
+      rgba(0, 183, 255, 0.8) 50%,
+      rgba(0, 0, 0, 0)
+    ),
+    radial-gradient(
+      2px 2px at 50px 160px,
+      rgba(128, 0, 255, 0.8) 50%,
+      rgba(0, 0, 0, 0)
+    ),
+    radial-gradient(
+      2px 2px at 90px 40px,
+      rgba(0, 255, 240, 0.8) 50%,
+      rgba(0, 0, 0, 0)
+    ),
+    radial-gradient(
+      2px 2px at 130px 80px,
+      rgba(0, 183, 255, 0.8) 50%,
+      rgba(0, 0, 0, 0)
+    ),
+    radial-gradient(
+      2px 2px at 160px 120px,
+      rgba(0, 255, 240, 0.8) 50%,
+      rgba(0, 0, 0, 0)
+    );
+  background-repeat: repeat;
+  animation: starField 20s linear infinite;
+  opacity: 0.3;
 }
 
-.title {
-  font-size: 36px;
-  font-weight: 700;
-  color: #00e7ff;
-  text-shadow: 0 0 10px rgba(0, 231, 255, 0.5), 0 0 20px rgba(0, 231, 255, 0.3),
-    0 0 30px rgba(0, 231, 255, 0.2);
-  text-transform: uppercase;
-  letter-spacing: 4px;
+.ticketInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(0, 255, 240, 0.05);
+  border: 1px solid rgba(0, 255, 240, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 255, 240, 0.1);
+  position: relative;
+  backdrop-filter: blur(10px);
 }
 
-.status {
-  font-size: 14px;
-  color: #00e7ff;
-  opacity: 0.8;
-  margin-top: 8px;
+.ticketNumber {
+  font-size: 18px;
+  font-weight: 800;
+  color: rgba(0, 255, 240, 0.9);
+  text-shadow: 0 0 10px rgba(0, 255, 240, 0.5);
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
+  position: relative;
+  letter-spacing: 2px;
 }
 
-.statusDot {
-  width: 8px;
-  height: 8px;
-  background: #00e7ff;
-  border-radius: 50%;
-  box-shadow: 0 0 10px #00e7ff;
-  animation: pulse 2s infinite;
+.ticketNumber::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 255, 240, 0.2),
+    transparent
+  );
+  filter: blur(8px);
+  animation: neonPulse 2s infinite;
 }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 40px;
-}
-
-.statItem {
-  background: rgba(0, 231, 255, 0.05);
-  border: 1px solid rgba(0, 231, 255, 0.1);
-  border-radius: 16px;
-  padding: 15px;
-  text-align: center;
-}
-
-.statValue {
-  font-size: 24px;
-  font-weight: 700;
-  color: #00e7ff;
-  margin-bottom: 4px;
-}
-
-.statLabel {
-  font-size: 12px;
-  color: #00e7ff;
-  opacity: 0.6;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.ticketPrice {
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 240, 0.2),
+    rgba(128, 0, 255, 0.2)
+  );
+  border: 1px solid rgba(0, 255, 240, 0.3);
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 18px;
+  box-shadow: 0 0 20px rgba(0, 255, 240, 0.2);
+  position: relative;
+  overflow: hidden;
+  text-shadow: 0 0 10px rgba(0, 255, 240, 0.5);
 }
 
 .scratchArea {
   position: relative;
-  width: 280px;
-  height: 280px;
-  margin: 0 auto 40px;
-}
-
-.scratchCircle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: rgba(0, 231, 255, 0.05);
-  border: 2px solid rgba(0, 231, 255, 0.2);
-}
-
-.scratchText {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #00e7ff;
-  font-size: 24px;
-  font-weight: 700;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-
-.scratchDots {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 240px;
-  height: 240px;
-}
-
-.dot {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: #00e7ff;
-  border-radius: 50%;
-  box-shadow: 0 0 15px rgba(0, 231, 255, 0.5);
-}
-
-.prizes {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin-bottom: 30px;
-}
-
-.prizeItem {
-  background: rgba(0, 231, 255, 0.05);
-  border: 1px solid rgba(0, 231, 255, 0.1);
-  border-radius: 12px;
-  padding: 12px;
-  text-align: center;
-}
-
-.prizeAmount {
-  font-size: 20px;
-  font-weight: 700;
-  color: #00e7ff;
-  margin-bottom: 4px;
-}
-
-.prizeLabel {
-  font-size: 11px;
-  color: #00e7ff;
-  opacity: 0.6;
-  text-transform: uppercase;
-}
-
-.scratchButton {
   width: 100%;
-  padding: 16px;
-  background: rgba(0, 231, 255, 0.1);
-  border: 1px solid rgba(0, 231, 255, 0.2);
-  border-radius: 12px;
-  color: #00e7ff;
-  font-size: 18px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.scratchButton:hover {
-  background: rgba(0, 231, 255, 0.15);
-  border-color: rgba(0, 231, 255, 0.3);
-  box-shadow: 0 0 20px rgba(0, 231, 255, 0.2);
+  height: 200px;
+  background: linear-gradient(
+      45deg,
+      rgba(0, 255, 240, 0.05) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgba(128, 0, 255, 0.05) 75%
+    ),
+    radial-gradient(
+      circle at center,
+      rgba(0, 255, 240, 0.1) 0%,
+      rgba(13, 16, 33, 0.95) 70%
+    );
+  background-size: 60px 60px, 100% 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 255, 240, 0.2);
+  box-shadow: inset 0 0 30px rgba(0, 255, 240, 0.2),
+    0 0 30px rgba(0, 255, 240, 0.1);
 }
 
 .scratchCanvas {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   cursor: pointer;
-  z-index: 10;
+  z-index: 2;
+  touch-action: none;
+  border-radius: 20px;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
+.prizeArea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 255, 240, 0.1),
+    rgba(13, 16, 33, 0.95)
+  );
+  backdrop-filter: blur(5px);
+}
+
+.prizeAmount {
+  font-size: 42px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: rgba(0, 255, 240, 0.9);
+  text-shadow: 0 0 10px rgba(0, 255, 240, 0.5), 0 0 20px rgba(0, 255, 240, 0.3),
+    0 0 30px rgba(0, 255, 240, 0.2);
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+}
+
+.prizeAmount.won {
+  color: rgba(0, 255, 240, 0.9);
+  animation: prizeGlow 2s infinite;
+}
+
+.prizeAmount.lost {
+  color: rgba(255, 71, 87, 0.9);
+  text-shadow: 0 0 10px rgba(255, 71, 87, 0.5), 0 0 20px rgba(255, 71, 87, 0.3);
+  animation: prizeLoss 0.5s ease-in-out;
+}
+
+.prizeText {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(0, 255, 240, 0.9);
+  background: rgba(0, 255, 240, 0.1);
+  border: 1px solid rgba(0, 255, 240, 0.2);
+  padding: 10px 20px;
+  border-radius: 30px;
+  box-shadow: 0 0 20px rgba(0, 255, 240, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(0, 255, 240, 0.5);
+}
+
+.scratchText {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(0, 255, 240, 0.9);
+  background: rgba(0, 255, 240, 0.1);
+  border: 1px solid rgba(0, 255, 240, 0.2);
+  padding: 12px 24px;
+  border-radius: 30px;
+  animation: floatEffect 4s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(0, 255, 240, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(0, 255, 240, 0.5);
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes cosmicGlow {
+  0%,
+  100% {
+    filter: hue-rotate(0deg) brightness(1);
+    box-shadow: 0 0 30px rgba(0, 255, 240, 0.3),
+      inset 0 0 20px rgba(0, 255, 240, 0.2);
   }
   50% {
-    transform: scale(1.2);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
+    filter: hue-rotate(180deg) brightness(1.2);
+    box-shadow: 0 0 40px rgba(128, 0, 255, 0.4),
+      inset 0 0 30px rgba(128, 0, 255, 0.3);
   }
 }
 
-@media (max-width: 480px) {
-  .container {
-    padding: 15px;
+@keyframes starField {
+  from {
+    transform: translateY(0);
   }
+  to {
+    transform: translateY(100%);
+  }
+}
 
-  .title {
-    font-size: 28px;
+@keyframes neonPulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes prizeGlow {
+  0%,
+  100% {
+    text-shadow: 0 0 10px rgba(0, 255, 240, 0.5),
+      0 0 20px rgba(0, 255, 240, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(0, 255, 240, 0.7),
+      0 0 30px rgba(0, 255, 240, 0.5);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes prizeLoss {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
+}
+
+@keyframes floatEffect {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.revealed {
+  animation: revealEffect 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes revealEffect {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.ticket:hover .ticketInner {
+  transform: perspective(2000px) rotateX(5deg) rotateY(5deg) scale(1.02);
+  box-shadow: 0 0 50px rgba(0, 255, 240, 0.4),
+    inset 0 0 30px rgba(0, 255, 240, 0.3);
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 768px) {
+  .ticket {
+    max-width: 280px;
   }
 
   .scratchArea {
-    width: 240px;
-    height: 240px;
+    height: 180px;
   }
 
-  .scratchCircle {
-    width: 180px;
-    height: 180px;
+  .prizeAmount {
+    font-size: 36px;
+  }
+
+  .prizeText {
+    font-size: 16px;
   }
 }

@@ -1,188 +1,175 @@
-import React, { useState, useRef, useEffect } from "react";
-import styles from "./styles.module.css";
+// src/components/ScratchTicket/ScratchTicket.jsx
+import { useState, useRef, useEffect } from "react";
+import styles from "./ScratchTicket.module.css";
 
-const CyberLottery = () => {
+// eslint-disable-next-line react/prop-types
+const ScratchTicket = ({ ticketId, price }) => {
   const canvasRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [isScratched, setIsScratched] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
-  const [scratchPercentage, setScratchPercentage] = useState(0);
+  const [prize, setPrize] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-
     const ctx = canvas.getContext("2d");
-    canvas.width = 240;
-    canvas.height = 240;
 
-    // Create circular clipping path
-    ctx.beginPath();
-    ctx.arc(
-      canvas.width / 2,
-      canvas.height / 2,
-      canvas.width / 2,
-      0,
-      Math.PI * 2
-    );
-    ctx.clip();
+    // Устанавливаем размер canvas
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
 
-    // Create cyberpunk gradient background
-    const gradient = ctx.createLinearGradient(
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
-    gradient.addColorStop(0, "#0A1824");
-    gradient.addColorStop(1, "#142838");
-
-    ctx.fillStyle = gradient;
+    // Заполняем серым цветом
+    ctx.fillStyle = "#CCCCCC";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Add grid pattern
-    ctx.strokeStyle = "rgba(0, 231, 255, 0.1)";
-    ctx.lineWidth = 1;
-
-    for (let i = 0; i < canvas.width; i += 20) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, canvas.height);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(canvas.width, i);
-      ctx.stroke();
-    }
   }, []);
 
-  // Generate dots around the circle
-  const generateDots = () => {
-    const dots = [];
-    const totalDots = 12;
-    const radius = 120;
-
-    for (let i = 0; i < totalDots; i++) {
-      const angle = (i * 2 * Math.PI) / totalDots;
-      const x = Math.cos(angle) * radius + radius;
-      const y = Math.sin(angle) * radius + radius;
-      dots.push(
-        <div
-          key={i}
-          className={styles.dot}
-          style={{
-            left: `${x}px`,
-            top: `${y}px`,
-            animation: `pulse 2s infinite ${i * (2 / totalDots)}s`,
-          }}
-        />
-      );
-    }
-    return dots;
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    scratch(e);
   };
 
-  const handleScratch = (e) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  const handleMouseMove = (e) => {
+    if (isDragging) {
+      scratch(e);
+    }
+  };
 
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    checkRevealThreshold();
+  };
+
+  const handleTouchStart = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+    scratchTouch(e);
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault();
+    if (isDragging) {
+      scratchTouch(e);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    checkRevealThreshold();
+  };
+
+  const scratch = (e) => {
+    const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX ?? e.touches[0].clientX) - rect.left;
-    const y = (e.clientY ?? e.touches[0].clientY) - rect.top;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
     ctx.globalCompositeOperation = "destination-out";
     ctx.beginPath();
-    ctx.arc(x, y, 20, 0, Math.PI * 2);
+    ctx.arc(x, y, 20, 0, 2 * Math.PI);
     ctx.fill();
+  };
 
-    // Calculate scratch percentage
+  const scratchTouch = (e) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.beginPath();
+    ctx.arc(x, y, 20, 0, 2 * Math.PI);
+    ctx.fill();
+  };
+
+  const checkRevealThreshold = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const pixels = imageData.data;
     let transparentPixels = 0;
 
     for (let i = 0; i < pixels.length; i += 4) {
-      if (pixels[i + 3] < 128) transparentPixels++;
+      if (pixels[i + 3] < 128) {
+        transparentPixels++;
+      }
     }
 
-    const newPercentage = (transparentPixels / (pixels.length / 4)) * 100;
-    setScratchPercentage(newPercentage);
+    const totalPixels = pixels.length / 4;
+    const scratchedPercentage = (transparentPixels / totalPixels) * 100;
 
-    if (newPercentage > 50 && !isRevealed) {
-      setIsRevealed(true);
+    if (scratchedPercentage > 50 && !isRevealed) {
+      revealPrize();
     }
   };
 
+  const revealPrize = () => {
+    setIsRevealed(true);
+    // Симулируем случайный выигрыш
+    const isWinner = Math.random() > 0.5;
+    const amount = isWinner ? Math.floor(Math.random() * 5 + 1) * 100 : 0;
+    setPrize(amount);
+  };
+
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>TON LOTTERY</h1>
-        <div className={styles.status}>
-          <div className={styles.statusDot} />
-          MAINNET CONNECTED
+    <div className={styles.ticket}>
+      <div className={styles.ticketInner}>
+        <div className={styles.ticketContent}>
+          <div className={styles.ticketInfo}>
+            <span className={styles.ticketNumber}>{ticketId}</span>
+            <span className={styles.ticketPrice}>{price} ₽</span>
+          </div>
+          <div className={styles.scratchArea}>
+            {!isRevealed ? (
+              <canvas
+                ref={canvasRef}
+                className={styles.scratchCanvas}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              />
+            ) : null}
+            <div
+              className={`${styles.prizeArea} ${
+                isRevealed ? styles.revealed : ""
+              }`}
+            >
+              {isRevealed ? (
+                prize > 0 ? (
+                  <>
+                    <span className={`${styles.prizeAmount} ${styles.won}`}>
+                      +{prize} ₽
+                    </span>
+                    <span className={styles.prizeText}>Поздравляем!</span>
+                  </>
+                ) : (
+                  <>
+                    <span className={`${styles.prizeAmount} ${styles.lost}`}>
+                      0 ₽
+                    </span>
+                    <span className={styles.prizeText}>
+                      Повезет в следующий раз!
+                    </span>
+                  </>
+                )
+              ) : (
+                <span className={styles.scratchText}>
+                  Потрите, чтобы узнать результат
+                </span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-
-      <div className={styles.stats}>
-        <div className={styles.statItem}>
-          <div className={styles.statValue}>1,234</div>
-          <div className={styles.statLabel}>Players</div>
-        </div>
-        <div className={styles.statItem}>
-          <div className={styles.statValue}>156.8K</div>
-          <div className={styles.statLabel}>TON Pool</div>
-        </div>
-        <div className={styles.statItem}>
-          <div className={styles.statValue}>24H</div>
-          <div className={styles.statLabel}>Until Draw</div>
-        </div>
-      </div>
-
-      <div className={styles.scratchArea}>
-        <div className={styles.scratchCircle} />
-        <div className={styles.scratchDots}>{generateDots()}</div>
-        {!isRevealed && (
-          <canvas
-            ref={canvasRef}
-            className={styles.scratchCanvas}
-            onMouseDown={() => setIsDragging(true)}
-            onMouseUp={() => setIsDragging(false)}
-            onMouseMove={(e) => isDragging && handleScratch(e)}
-            onMouseLeave={() => setIsDragging(false)}
-            onTouchStart={(e) => {
-              e.preventDefault();
-              setIsDragging(true);
-              handleScratch(e);
-            }}
-            onTouchMove={(e) => {
-              e.preventDefault();
-              isDragging && handleScratch(e);
-            }}
-            onTouchEnd={() => setIsDragging(false)}
-          />
-        )}
-        <div className={styles.scratchText}>
-          {isRevealed ? "25K TON" : "SCRATCH\nHERE"}
-        </div>
-      </div>
-
-      <div className={styles.prizes}>
-        <div className={styles.prizeItem}>
-          <div className={styles.prizeAmount}>50K TON</div>
-          <div className={styles.prizeLabel}>1st Prize</div>
-        </div>
-        <div className={styles.prizeItem}>
-          <div className={styles.prizeAmount}>25K TON</div>
-          <div className={styles.prizeLabel}>2nd Prize</div>
-        </div>
-        <div className={styles.prizeItem}>
-          <div className={styles.prizeAmount}>10K TON</div>
-          <div className={styles.prizeLabel}>3rd Prize</div>
-        </div>
-      </div>
-
-      <button className={styles.scratchButton}>SCRATCH TO REVEAL</button>
     </div>
   );
 };
 
-export default CyberLottery;
+export default ScratchTicket;
