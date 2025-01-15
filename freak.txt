@@ -16,9 +16,6 @@ function App() {
     }
 
     tg.ready();
-    tg.requestFullscreen();
-
-    tg.disableVerticalSwipes();
     tg.expand();
 
     tg.MainButton.setText("КУПИТЬ БИЛЕТ");
