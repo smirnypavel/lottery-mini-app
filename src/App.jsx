@@ -28,6 +28,7 @@ function App() {
       "--tg-theme-button-text-color",
       tg.themeParams.button_text_color
     );
+    tg.requestFullscreen();
 
     // Устанавливаем цвет хедера
     tg.setHeaderColor(tg.themeParams.bg_color);
