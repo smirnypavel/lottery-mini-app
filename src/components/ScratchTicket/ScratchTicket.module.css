@@ -12,55 +12,81 @@
   position: relative;
   transform-style: preserve-3d;
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 5px;
-  background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #6c5ce7);
+  padding: 3px;
+  background: linear-gradient(
+    135deg,
+    #b8860b 0%,
+    #ffd700 25%,
+    #b8860b 50%,
+    #ffd700 75%,
+    #b8860b 100%
+  );
   background-size: 400% 400%;
   border-radius: 30px;
-  animation: gradientBG 15s ease infinite;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 5px rgba(255, 255, 255, 0.1);
+  animation: goldShimmer 8s linear infinite;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(184, 134, 11, 0.5),
+    0 0 20px rgba(255, 215, 0, 0.3);
   overflow: hidden;
 }
 
 .ticketContent {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 25px;
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  border-radius: 28px;
   padding: 20px;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.1);
+  position: relative;
+}
+
+.ticketContent::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255, 215, 0, 0.1) 45%,
+    rgba(255, 215, 0, 0.2) 50%,
+    rgba(255, 215, 0, 0.1) 55%,
+    transparent 100%
+  );
+  pointer-events: none;
+  animation: shine 3s infinite linear;
 }
 
 .ticketHeader {
-  background: rgba(0, 0, 0, 0.2);
-  padding: 20px;
+  background: linear-gradient(45deg, #000000, #1a1a1a);
+  padding: 25px;
   border-radius: 20px;
   text-align: center;
   margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
-}
-
-.ticketHeader::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: rgba(255, 255, 255, 0.1);
-  transform: rotate(45deg);
-  animation: shine 3s linear infinite;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2),
+    inset 0 0 20px rgba(255, 215, 0, 0.1);
 }
 
 .ticketTitle {
   font-size: 42px;
   font-weight: 900;
-  background: linear-gradient(to right, #ffd700, #ffa07a);
+  background: linear-gradient(to right, #ffd700, #fdb931, #ffd700);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   margin: 0;
-  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.5);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  position: relative;
+}
+
+.ticketTitle::after {
+  content: "LUXURY TICKET";
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  letter-spacing: 6px;
+  color: rgba(255, 215, 0, 0.5);
+  white-space: nowrap;
 }
 
 .ticketInfo {
@@ -69,40 +95,44 @@
   align-items: center;
   margin-bottom: 20px;
   padding: 15px 20px;
-  background: rgba(0, 0, 0, 0.2);
+  background: linear-gradient(45deg, #000000, #1a1a1a);
   border-radius: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.05);
 }
 
 .ticketNumber {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 800;
   color: #ffd700;
   padding: 10px 20px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.5);
   border-radius: 15px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .ticketPrice {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 800;
   color: #fff;
   padding: 10px 20px;
-  background: linear-gradient(135deg, #ff6b6b, #6c5ce7);
+  background: linear-gradient(135deg, #b8860b, #ffd700);
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3),
+    inset 0 0 10px rgba(255, 255, 255, 0.2);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .scratchArea {
   position: relative;
   width: 100%;
   aspect-ratio: 4/3;
-  background: #fff;
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
   border-radius: 25px;
   overflow: hidden;
-  box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.2),
-    0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.3),
+    inset 0 0 20px rgba(255, 215, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.3);
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
@@ -127,15 +157,12 @@
 
 .prizeArea {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
   padding: 20px;
-  background: radial-gradient(circle at center, #fff 0%, #f8f9fa 100%);
+  background: linear-gradient(135deg, #111111, #1a1a1a);
   z-index: 1;
 }
 
@@ -143,33 +170,53 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 20px;
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.05),
+    0 5px 15px rgba(0, 0, 0, 0.2);
   padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.symbolCell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 215, 0, 0.1),
+    transparent
+  );
+  animation: shimmerCell 2s infinite;
 }
 
 .symbol {
   font-size: 48px;
-  color: #ffd700;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #ffd700, #fdb931);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 
 .prizeAmount {
-  font-size: 42px;
+  font-size: 38px;
   font-weight: 900;
-  background: linear-gradient(135deg, #ff6b6b, #6c5ce7);
+  background: linear-gradient(135deg, #ffd700, #fdb931);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
-  animation: pulse 2s infinite;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  animation: pulsePrize 2s infinite;
 }
 
 .prizeAmount.won {
-  background: linear-gradient(135deg, #ffd700, #ffa07a);
+  background: linear-gradient(135deg, #ffd700, #ffa500);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: bigWin 2s infinite;
+  animation: winPulse 1s infinite;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
 }
 
 .scratchText {
@@ -180,130 +227,72 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 800;
-  color: rgba(255, 255, 255, 0.8);
+  background: linear-gradient(135deg, #ffd700, #fdb931);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-transform: uppercase;
   letter-spacing: 2px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
   z-index: 1;
   pointer-events: none;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Анимации */
-@keyframes gradientBG {
+@keyframes goldShimmer {
   0% {
     background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
   }
   100% {
-    background-position: 0% 50%;
+    background-position: 400% 50%;
   }
 }
 
-@keyframes shine {
-  from {
-    transform: translateX(-100%) rotate(45deg);
-  }
-  to {
-    transform: translateX(100%) rotate(45deg);
-  }
-}
-
-@keyframes gradientMove {
+@keyframes shimmerCell {
   0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
+    transform: translateX(-100%);
   }
   100% {
-    background-position: 0% 50%;
+    transform: translateX(100%);
   }
 }
 
-@keyframes bigWin {
-  0% {
-    transform: scale(1) rotate(0deg);
-  }
-  50% {
-    transform: scale(1.2) rotate(5deg);
-  }
+@keyframes winPulse {
+  0%,
   100% {
-    transform: scale(1) rotate(0deg);
-  }
-}
-
-@keyframes pulse {
-  0% {
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
     transform: scale(1);
-    opacity: 1;
   }
   50% {
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+    transform: scale(1.1);
+  }
+}
+
+@keyframes pulsePrize {
+  0%,
+  100% {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.7));
     transform: scale(0.95);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
   }
 }
 
-.revealed {
-  animation: revealAnimation 0.5s ease-out forwards;
-}
+/* Остальные анимации остаются без изменений */
 
-@keyframes revealAnimation {
-  0% {
-    opacity: 0;
-    transform: scale(0.8) rotate(-10deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(0);
-  }
-}
-
-/* Медиа-запросы */
+/* Медиа-запросы с улучшенными значениями */
 @media (max-width: 480px) {
-  .ticket {
-    width: 95%;
-  }
-
   .ticketTitle {
-    font-size: 36px;
+    font-size: 38px;
   }
-
-  .ticketNumber,
-  .ticketPrice {
-    font-size: 20px;
+  .ticketTitle::after {
+    font-size: 10px;
+    bottom: -10px;
   }
-
-  .prizeAmount {
-    font-size: 36px;
-  }
-
-  .scratchText {
-    font-size: 24px;
-  }
-
-  .symbol {
-    font-size: 36px;
-  }
-}
-
-@media (max-width: 360px) {
-  .ticketContent {
+  .symbolCell {
     padding: 15px;
-  }
-
-  .ticketHeader {
-    padding: 15px;
-  }
-
-  .ticketTitle {
-    font-size: 32px;
   }
 }

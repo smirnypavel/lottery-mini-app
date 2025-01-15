@@ -1,12 +1,12 @@
 /* src/components/TicketSelection/TicketSelection.module.css */
 .container {
-  padding: 16px;
+  padding: 10px;
 }
 
 .title {
   font-size: 20px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 6px;
   text-align: center;
   color: var(--tg-theme-text-color);
 }
@@ -38,7 +38,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 5px;
 }
 
 .ticketName {

@@ -15,7 +15,7 @@
 }
 
 .header {
-  padding: 16px;
+  padding: 6px;
   flex-shrink: 0;
 }
 
@@ -28,11 +28,11 @@
 
 .userInfo {
   background-color: var(--tg-theme-secondary-bg-color);
-  padding: 16px;
+  padding: 6px;
   border-radius: 12px;
   text-align: center;
   max-width: 300px;
-  margin: 16px auto 0;
+  margin: 6px auto 0;
 }
 
 .userName {

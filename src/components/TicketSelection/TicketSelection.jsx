@@ -32,7 +32,7 @@ const TicketSelection = ({ onSelect }) => {
           >
             <div className={styles.ticketHeader}>
               <span className={styles.ticketName}>{ticket.name}</span>
-              <span className={styles.ticketPrice}>{ticket.price} ₽</span>
+              <span className={styles.ticketPrice}>{ticket.price} $</span>
             </div>
             <div className={styles.ticketInfo}>
               <span className={styles.chanceLabel}>Шанс выигрыша:</span>
