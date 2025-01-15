@@ -148,7 +148,7 @@ const ScratchTicket = ({ ticketId, price }) => {
       // Показываем прогресс в MainButton
       const tg = window.Telegram.WebApp;
       tg.MainButton.showProgress();
-      tg.MainButton.setText("Проверяем результат...");
+      // tg.MainButton.setText("Проверяем результат...");
 
       // Имитируем задержку для анимации
       setTimeout(() => {
@@ -171,7 +171,7 @@ const ScratchTicket = ({ ticketId, price }) => {
       // Показываем поздравление
       tg.showPopup({
         title: "Поздравляем!",
-        message: `Вы выиграли ${amount}₽!`,
+        message: `Вы выиграли ${amount}$!`,
         buttons: [
           {
             id: "collect",
@@ -249,7 +249,7 @@ const ScratchTicket = ({ ticketId, price }) => {
                 ) : (
                   <div className={styles.loseDisplay}>
                     <div className={styles.loseSymbol}>✖</div>
-                    <div className={styles.loseAmount}>0₽</div>
+                    <div className={styles.loseAmount}>0$</div>
                     <div className={styles.loseText}>
                       Повезет в следующий раз!
                     </div>

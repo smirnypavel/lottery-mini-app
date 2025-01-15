@@ -41,7 +41,7 @@ const TicketSelection = ({ onSelect }) => {
     window.Telegram.WebApp.showPopup(
       {
         title: "Подтверждение",
-        message: `Вы выбрали "${ticket.name}" билет за ${ticket.price}₽. Подтвердить покупку?`,
+        message: `Вы выбрали "${ticket.name}" билет за ${ticket.price}$. Подтвердить покупку?`,
         buttons: [
           {
             type: "ok",
@@ -85,7 +85,7 @@ const TicketSelection = ({ onSelect }) => {
             <div className={styles.ticketContent}>
               <div className={styles.ticketHeader}>
                 <span className={styles.ticketName}>{ticket.name}</span>
-                <span className={styles.ticketPrice}>{ticket.price} ₽</span>
+                <span className={styles.ticketPrice}>{ticket.price} $</span>
               </div>
 
               <p className={styles.ticketDescription}>{ticket.description}</p>
