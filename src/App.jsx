@@ -113,7 +113,7 @@ function App() {
               Привет,{" "}
               <span className={styles.userName}>{user.first_name}!</span>
             </p>
-            <p className={styles.userBalance}>Баланс: 0 ₽</p>
+            <p className={styles.userBalance}>Баланс: 0 $</p>
           </div>
         )}
       </header>

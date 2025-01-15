@@ -13,20 +13,48 @@
   transform-style: preserve-3d;
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 3px;
-  background: linear-gradient(
-    135deg,
-    #b8860b 0%,
-    #ffd700 25%,
-    #b8860b 50%,
-    #ffd700 75%,
-    #b8860b 100%
-  );
-  background-size: 400% 400%;
   border-radius: 30px;
-  animation: goldShimmer 8s linear infinite;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(184, 134, 11, 0.5),
-    0 0 20px rgba(255, 215, 0, 0.3);
   overflow: hidden;
+}
+
+/* Простой билет */
+.ticketInner[data-type="простой"] {
+  background: linear-gradient(135deg, #4caf50 0%, #81c784 50%, #4caf50 100%);
+  box-shadow: 0 20px 40px rgba(76, 175, 80, 0.4),
+    0 0 0 3px rgba(76, 175, 80, 0.5), 0 0 20px rgba(76, 175, 80, 0.3);
+}
+
+/* Золотой билет */
+.ticketInner[data-type="золотой"] {
+  background: linear-gradient(135deg, #ffc107 0%, #ffd700 50%, #ffc107 100%);
+  box-shadow: 0 20px 40px rgba(255, 193, 7, 0.4),
+    0 0 0 3px rgba(255, 193, 7, 0.5), 0 0 20px rgba(255, 193, 7, 0.3);
+}
+
+/* Платиновый билет */
+.ticketInner[data-type="платиновый"] {
+  background: linear-gradient(135deg, #9c27b0 0%, #ba68c8 50%, #9c27b0 100%);
+  box-shadow: 0 20px 40px rgba(156, 39, 176, 0.4),
+    0 0 0 3px rgba(156, 39, 176, 0.5), 0 0 20px rgba(156, 39, 176, 0.3);
+}
+
+/* Добавляем соответствующие цвета для символов */
+.ticketInner[data-type="простой"] .symbol {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ticketInner[data-type="золотой"] .symbol {
+  background: linear-gradient(135deg, #ffc107, #ffd700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ticketInner[data-type="платиновый"] .symbol {
+  background: linear-gradient(135deg, #9c27b0, #ba68c8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .ticketContent {
