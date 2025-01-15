@@ -231,31 +231,29 @@ const ScratchTicket = ({ ticketId, price }) => {
             >
               {isRevealed ? (
                 prize > 0 ? (
-                  <>
-                    <div className={styles.symbolCell}>
-                      <span className={styles.symbol}>★</span>
+                  <div className={styles.winDisplay}>
+                    <div className={styles.winHeader}>
+                      <div className={styles.winStars}>★ ★ ★</div>
+                      <h2 className={styles.winTitle}>ВЫ ВЫИГРАЛИ!</h2>
+                      <div className={styles.winStars}>★ ★ ★</div>
                     </div>
-                    <div className={styles.symbolCell}>
-                      <span className={`${styles.prizeAmount} ${styles.won}`}>
-                        {prize}₽
-                      </span>
+
+                    <div className={styles.prizeAmount}>{prize}₽</div>
+
+                    <div className={styles.winFooter}>
+                      <div className={styles.confetti}>🎉</div>
+                      <span className={styles.winText}>Поздравляем!</span>
+                      <div className={styles.confetti}>🎉</div>
                     </div>
-                    <div className={styles.symbolCell}>
-                      <span className={styles.symbol}>★</span>
-                    </div>
-                  </>
+                  </div>
                 ) : (
-                  <>
-                    <div className={styles.symbolCell}>
-                      <span className={styles.symbol}>✖</span>
+                  <div className={styles.loseDisplay}>
+                    <div className={styles.loseSymbol}>✖</div>
+                    <div className={styles.loseAmount}>0₽</div>
+                    <div className={styles.loseText}>
+                      Повезет в следующий раз!
                     </div>
-                    <div className={styles.symbolCell}>
-                      <span className={styles.prizeAmount}>0₽</span>
-                    </div>
-                    <div className={styles.symbolCell}>
-                      <span className={styles.symbol}>✖</span>
-                    </div>
-                  </>
+                  </div>
                 )
               ) : (
                 <span className={styles.scratchText}>СТЕРЕТЬ</span>
@@ -272,6 +270,7 @@ ScratchTicket.propTypes = {
   ticketId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
   price: PropTypes.number.isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 export default ScratchTicket;

@@ -84,11 +84,25 @@ function App() {
     // Когда выбираем новый билет, заменяем текущий
     setCurrentTicket({
       ...selectedTicket,
-      id: Date.now(), // Уникальный ID для каждого билета
+      id: Date.now(),
+      type: selectedTicket.name.toLowerCase(), // Уникальный ID для каждого билета
     });
     setIsSelecting(false);
   };
+  useEffect(() => {
+    const tg = window.Telegram.WebApp;
 
+    if (isSelecting) {
+      tg.MainButton.hide(); // Скрываем во время выбора билета
+    } else if (!currentTicket) {
+      tg.MainButton.setText("КУПИТЬ БИЛЕТ");
+      tg.MainButton.show();
+    } else {
+      // Если билет уже куплен, показываем кнопку "КУПИТЬ ЕЩЁ"
+      tg.MainButton.setText("КУПИТЬ ЕЩЁ");
+      tg.MainButton.show();
+    }
+  }, [isSelecting, currentTicket]);
   return (
     <div className={styles.container}>
       <header className={styles.header}>
