@@ -1,10 +1,11 @@
-/* src/components/ScratchTicket/ScratchTicket.module.css */
+/* ScratchTicket.module.css */
 .ticket {
-  width: 100%;
+  width: 90%;
   max-width: 380px;
-  margin: 0 auto 30px;
-  perspective: 2000px;
+  margin: auto;
   position: relative;
+  perspective: 2000px;
+  touch-action: none;
 }
 
 .ticketInner {
@@ -17,12 +18,13 @@
   border-radius: 30px;
   animation: gradientBG 15s ease infinite;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 5px rgba(255, 255, 255, 0.1);
+  overflow: hidden;
 }
 
 .ticketContent {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 25px;
-  padding: 25px;
+  padding: 20px;
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.1);
 }
@@ -32,7 +34,7 @@
   padding: 20px;
   border-radius: 20px;
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   position: relative;
   overflow: hidden;
 }
@@ -65,7 +67,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   padding: 15px 20px;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 20px;
@@ -95,12 +97,15 @@
 .scratchArea {
   position: relative;
   width: 100%;
-  height: 280px;
+  aspect-ratio: 4/3;
   background: #fff;
   border-radius: 25px;
   overflow: hidden;
   box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.2),
     0 10px 20px rgba(0, 0, 0, 0.2);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .scratchCanvas {
@@ -115,6 +120,9 @@
   background-size: 200% 200%;
   animation: gradientMove 3s ease infinite;
   mix-blend-mode: multiply;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .prizeArea {
@@ -128,6 +136,7 @@
   gap: 15px;
   padding: 20px;
   background: radial-gradient(circle at center, #fff 0%, #f8f9fa 100%);
+  z-index: 1;
 }
 
 .symbolCell {
@@ -147,7 +156,7 @@
 }
 
 .prizeAmount {
-  font-size: 56px;
+  font-size: 42px;
   font-weight: 900;
   background: linear-gradient(135deg, #ff6b6b, #6c5ce7);
   -webkit-background-clip: text;
@@ -166,6 +175,10 @@
 .scratchText {
   position: absolute;
   width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   font-size: 32px;
   font-weight: 800;
@@ -177,6 +190,7 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* Анимации */
 @keyframes gradientBG {
   0% {
     background-position: 0% 50%;
@@ -224,38 +238,72 @@
 
 @keyframes pulse {
   0% {
-    opacity: 1;
     transform: scale(1);
+    opacity: 1;
   }
   50% {
-    opacity: 0.8;
     transform: scale(0.95);
+    opacity: 0.8;
   }
   100% {
-    opacity: 1;
     transform: scale(1);
+    opacity: 1;
   }
 }
 
-/* Медиа-запрос для мобильных устройств */
+.revealed {
+  animation: revealAnimation 0.5s ease-out forwards;
+}
+
+@keyframes revealAnimation {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotate(-10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+/* Медиа-запросы */
 @media (max-width: 480px) {
   .ticket {
-    max-width: 340px;
-  }
-
-  .scratchArea {
-    height: 240px;
+    width: 95%;
   }
 
   .ticketTitle {
     font-size: 36px;
   }
 
+  .ticketNumber,
+  .ticketPrice {
+    font-size: 20px;
+  }
+
   .prizeAmount {
-    font-size: 48px;
+    font-size: 36px;
   }
 
   .scratchText {
-    font-size: 28px;
+    font-size: 24px;
+  }
+
+  .symbol {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 360px) {
+  .ticketContent {
+    padding: 15px;
+  }
+
+  .ticketHeader {
+    padding: 15px;
+  }
+
+  .ticketTitle {
+    font-size: 32px;
   }
 }
