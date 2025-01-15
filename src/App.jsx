@@ -5,66 +5,31 @@ import TicketSelection from "./components/TicketSelection/TicketSelection";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [tickets, setTickets] = useState([]);
+  const [currentTicket, setCurrentTicket] = useState(null);
   const [isSelecting, setIsSelecting] = useState(false);
 
   useEffect(() => {
     const tg = window.Telegram.WebApp;
 
-    // Получаем пользователя из Telegram
     if (tg.initDataUnsafe?.user) {
       setUser(tg.initDataUnsafe.user);
     }
 
     tg.ready();
-    tg.requestFullscreen();
+    tg.expand();
 
-    tg.disableVerticalSwipes();
-
-    // Обновление кнопок управления Telegram
     tg.MainButton.setText("КУПИТЬ БИЛЕТ");
     tg.MainButton.show();
-    tg.MainButton.onClick(() => {
-      setIsSelecting(true);
-      tg.requestFullscreen();
-    });
-
-    return () => {
-      tg.enableVerticalSwipes();
-    };
+    tg.MainButton.onClick(() => setIsSelecting(true));
   }, []);
 
   const handleSelectTicket = (selectedTicket) => {
-    const newTicket = {
-      id: Date.now(),
-      type: selectedTicket.name,
-      price: selectedTicket.price,
-      purchased: new Date().toISOString(),
-      chance: selectedTicket.chance,
-    };
-
-    setTickets((prev) => [...prev, newTicket]);
+    // Когда выбираем новый билет, заменяем текущий
+    setCurrentTicket({
+      ...selectedTicket,
+      id: Date.now(), // Уникальный ID для каждого билета
+    });
     setIsSelecting(false);
-
-    window.Telegram.WebApp.showPopup({
-      message: `Билет "${selectedTicket.name}" куплен успешно!`,
-    });
-  };
-
-  const handleRevealTicket = async (ticketId) => {
-    const ticket = tickets.find((t) => t.id === ticketId);
-    const chance = parseInt(ticket.chance.split(" к ")[1]);
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const isWinner = Math.random() * chance < 1;
-        const amount = isWinner ? ticket.price * chance : 0;
-        resolve({
-          amount,
-          isWinner,
-        });
-      }, 1500);
-    });
   };
 
   return (
@@ -85,22 +50,17 @@ function App() {
       <main className={styles.main}>
         {isSelecting ? (
           <TicketSelection onSelect={handleSelectTicket} />
-        ) : tickets.length > 0 ? (
-          <div className={styles.ticketsList}>
-            {tickets.map((ticket) => (
-              <ScratchTicket
-                key={ticket.id}
-                ticketId={ticket.id}
-                price={ticket.price}
-                onReveal={handleRevealTicket}
-              />
-            ))}
-          </div>
+        ) : currentTicket ? (
+          <ScratchTicket
+            key={currentTicket.id}
+            ticketId={currentTicket.id}
+            price={currentTicket.price}
+          />
         ) : (
           <div className={styles.emptyState}>
-            <p>У вас пока нет билетов</p>
+            <p>У вас нет активного билета</p>
             <p className={styles.hint}>
-              Нажмите кнопку КУПИТЬ БИЛЕТ внизу экрана
+              Нажмите кнопку &quot;КУПИТЬ БИЛЕТ&quot; внизу экрана
             </p>
           </div>
         )}
