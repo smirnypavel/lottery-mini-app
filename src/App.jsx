@@ -11,19 +11,72 @@ function App() {
   useEffect(() => {
     const tg = window.Telegram.WebApp;
 
+    // Применяем цвета темы Telegram
+    document.documentElement.style.setProperty(
+      "--tg-theme-bg-color",
+      tg.themeParams.bg_color
+    );
+    document.documentElement.style.setProperty(
+      "--tg-theme-text-color",
+      tg.themeParams.text_color
+    );
+    document.documentElement.style.setProperty(
+      "--tg-theme-button-color",
+      tg.themeParams.button_color
+    );
+    document.documentElement.style.setProperty(
+      "--tg-theme-button-text-color",
+      tg.themeParams.button_text_color
+    );
+
+    // Устанавливаем цвет хедера
+    tg.setHeaderColor(tg.themeParams.bg_color);
+
+    // Включаем подтверждение закрытия
+    tg.enableClosingConfirmation();
+
+    // Отключаем свайпы по вертикали для предотвращения случайного закрытия
+    tg.disableVerticalSwipes();
+
     if (tg.initDataUnsafe?.user) {
       setUser(tg.initDataUnsafe.user);
     }
 
     tg.ready();
-    tg.requestFullscreen();
-
-    tg.disableVerticalSwipes();
     tg.expand();
 
+    // Настраиваем MainButton
     tg.MainButton.setText("КУПИТЬ БИЛЕТ");
     tg.MainButton.show();
-    tg.MainButton.onClick(() => setIsSelecting(true));
+    tg.MainButton.onClick(() => {
+      tg.HapticFeedback.impactOccurred("medium");
+      setIsSelecting(true);
+    });
+
+    // Добавляем обработчик изменения темы
+    tg.onEvent("themeChanged", () => {
+      document.documentElement.style.setProperty(
+        "--tg-theme-bg-color",
+        tg.themeParams.bg_color
+      );
+      document.documentElement.style.setProperty(
+        "--tg-theme-text-color",
+        tg.themeParams.text_color
+      );
+      document.documentElement.style.setProperty(
+        "--tg-theme-button-color",
+        tg.themeParams.button_color
+      );
+      document.documentElement.style.setProperty(
+        "--tg-theme-button-text-color",
+        tg.themeParams.button_text_color
+      );
+      tg.setHeaderColor(tg.themeParams.bg_color);
+    });
+
+    return () => {
+      tg.disableClosingConfirmation();
+    };
   }, []);
 
   const handleSelectTicket = (selectedTicket) => {

@@ -5,29 +5,73 @@ import styles from "./ScratchTicket.module.css";
 
 const ScratchTicket = ({ ticketId, price }) => {
   const canvasRef = useRef(null);
-  // const [isScratched, setIsScratched] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
   const [prize, setPrize] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
+    const tg = window.Telegram.WebApp;
+
+    // Отключаем случайное закрытие свайпом
+    tg.disableClosingConfirmation();
+    tg.disableVerticalSwipes();
+
+    // Включаем подтверждение при закрытии если билет не стерт
+    if (!isRevealed) {
+      tg.enableClosingConfirmation();
+    }
+
+    // Настраиваем кнопку Back если нужно
+    if (isRevealed) {
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => {
+        tg.HapticFeedback.impactOccurred("medium");
+        // Логика возврата
+      });
+    } else {
+      tg.BackButton.hide();
+    }
+
+    return () => {
+      tg.disableClosingConfirmation();
+      tg.BackButton.hide();
+    };
+  }, [isRevealed]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
+    const tg = window.Telegram.WebApp;
 
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    // Устанавливаем размер canvas с учетом SafeAreaInset
+    const safeArea = tg.safeAreaInset || {
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    };
+    canvas.width = canvas.offsetWidth - (safeArea.left + safeArea.right);
+    canvas.height = canvas.offsetHeight - (safeArea.top + safeArea.bottom);
 
-    ctx.fillStyle = "#1B1464";
+    ctx.fillStyle = tg.themeParams.secondary_bg_color || "#1B1464";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Слушаем изменения темы
+    tg.onEvent("themeChanged", () => {
+      ctx.fillStyle = tg.themeParams.secondary_bg_color;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    });
   }, []);
 
   const handleMouseDown = (e) => {
+    window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
     setIsDragging(true);
     scratch(e);
   };
 
   const handleMouseMove = (e) => {
     if (isDragging) {
+      window.Telegram.WebApp.HapticFeedback.selectionChanged();
       scratch(e);
     }
   };
@@ -39,6 +83,7 @@ const ScratchTicket = ({ ticketId, price }) => {
 
   const handleTouchStart = (e) => {
     e.preventDefault();
+    window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
     setIsDragging(true);
     scratchTouch(e);
   };
@@ -46,6 +91,7 @@ const ScratchTicket = ({ ticketId, price }) => {
   const handleTouchMove = (e) => {
     e.preventDefault();
     if (isDragging) {
+      window.Telegram.WebApp.HapticFeedback.selectionChanged();
       scratchTouch(e);
     }
   };
@@ -99,15 +145,55 @@ const ScratchTicket = ({ ticketId, price }) => {
     const scratchedPercentage = (transparentPixels / totalPixels) * 100;
 
     if (scratchedPercentage > 50 && !isRevealed) {
-      revealPrize();
+      // Показываем прогресс в MainButton
+      const tg = window.Telegram.WebApp;
+      tg.MainButton.showProgress();
+      tg.MainButton.setText("Проверяем результат...");
+
+      // Имитируем задержку для анимации
+      setTimeout(() => {
+        tg.MainButton.hideProgress();
+        revealPrize();
+      }, 1500);
     }
   };
 
   const revealPrize = () => {
+    const tg = window.Telegram.WebApp;
     setIsRevealed(true);
     const isWinner = Math.random() > 0.5;
     const amount = isWinner ? Math.floor(Math.random() * 5 + 1) * 100 : 0;
     setPrize(amount);
+
+    if (isWinner) {
+      // Успешная тактильная отдача при выигрыше
+      tg.HapticFeedback.notificationOccurred("success");
+      // Показываем поздравление
+      tg.showPopup({
+        title: "Поздравляем!",
+        message: `Вы выиграли ${amount}₽!`,
+        buttons: [
+          {
+            id: "collect",
+            type: "default",
+            text: "Забрать выигрыш",
+          },
+        ],
+      });
+    } else {
+      // Ошибочная тактильная отдача при проигрыше
+      tg.HapticFeedback.notificationOccurred("error");
+      tg.showPopup({
+        message: "К сожалению, в этот раз не повезло. Попробуйте ещё раз!",
+        buttons: [
+          {
+            id: "retry",
+            type: "default",
+            text: "Купить ещё билет",
+          },
+        ],
+      });
+    }
   };
 
   return (

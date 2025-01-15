@@ -1,14 +1,24 @@
-/* src/components/TicketSelection/TicketSelection.module.css */
 .container {
-  padding: 10px;
+  padding: 20px;
+  width: 100%;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
 }
 
 .title {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
   color: var(--tg-theme-text-color);
+  margin: 0 0 8px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--tg-theme-hint-color);
+  margin: 0;
 }
 
 .ticketList {
@@ -18,27 +28,54 @@
 }
 
 .ticketCard {
-  background-color: var(--tg-theme-secondary-bg-color);
-  border-radius: 12px;
-  padding: 16px;
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  border-radius: 16px;
+  padding: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: transform 0.2s ease;
-  border-left: 4px solid var(--ticket-color);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .ticketCard:hover {
   transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .ticketCard:active {
   transform: translateY(0);
 }
 
+.ticketIcon {
+  font-size: 32px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.ticketContent {
+  flex: 1;
+}
+
 .ticketHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .ticketName {
@@ -48,21 +85,108 @@
 }
 
 .ticketPrice {
-  font-weight: 600;
-  color: var(--tg-theme-text-color);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--tg-theme-button-color);
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+}
+
+.ticketDescription {
+  font-size: 14px;
+  color: var(--tg-theme-hint-color);
+  margin: 0 0 12px;
 }
 
 .ticketInfo {
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
+  align-items: center;
+}
+
+.chanceInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .chanceLabel {
+  font-size: 12px;
   color: var(--tg-theme-hint-color);
 }
 
 .chanceValue {
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--tg-theme-text-color);
+}
+
+.buyButton {
+  background: var(--ticket-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.buyButton:hover {
+  transform: scale(1.05);
+}
+
+.shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    transparent,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  20% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 360px) {
+  .container {
+    padding: 16px;
+  }
+
+  .ticketCard {
+    padding: 16px;
+  }
+
+  .ticketIcon {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+  }
+
+  .ticketName {
+    font-size: 16px;
+  }
+
+  .ticketPrice {
+    font-size: 16px;
+  }
 }
