@@ -1,7 +1,7 @@
 // src/components/TicketSelection/TicketSelection.jsx
+import PropTypes from "prop-types";
 import styles from "./TicketSelection.module.css";
 
-// eslint-disable-next-line react/prop-types
 const TicketSelection = ({ onSelect }) => {
   const tickets = [
     { id: 1, name: "Простой", price: 100, chance: "1 к 10", color: "#4CAF50" },
@@ -43,6 +43,10 @@ const TicketSelection = ({ onSelect }) => {
       </div>
     </div>
   );
+};
+
+TicketSelection.propTypes = {
+  onSelect: PropTypes.func.isRequired,
 };
 
 export default TicketSelection;
